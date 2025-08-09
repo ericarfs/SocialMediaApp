@@ -3,6 +3,9 @@ package ericarfs.socialmedia.entity;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,7 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -50,12 +52,9 @@ public class Answer {
     @ManyToMany
     private List<User> shares;
 
-    private Instant createdAt = Instant.now();
+    @CreatedDate
+    private Instant createdAt;
 
+    @LastModifiedDate
     private Instant updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        createdAt = Instant.now();
-    }
 }

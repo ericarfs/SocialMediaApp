@@ -35,6 +35,17 @@ public class ResourceExceptionHandler {
 		return new ResponseEntity<>(err, status);
 	}
 
+	@ExceptionHandler(PermissionDeniedException.class)
+	public ResponseEntity<StandardError> handlePermissionDeniedException(PermissionDeniedException e,
+			HttpServletRequest request) {
+		String error = "Permission denied";
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(),
+				request.getRequestURI());
+
+		return new ResponseEntity<>(err, status);
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleGenericException(Exception ex) {
 		Map<String, Object> body = new LinkedHashMap<>();
