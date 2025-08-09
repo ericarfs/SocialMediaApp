@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ericarfs.socialmedia.entity.enums.Role;
 import ericarfs.socialmedia.entity.util.Email;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -78,6 +79,8 @@ public class User {
 
     private boolean isVerified = false;
 
+    private String role;
+
     @CreatedDate
     private Instant createdAt;
 
@@ -85,4 +88,12 @@ public class User {
     private Instant updatedAt;
 
     private Instant lastLogin;
+
+    public Role getRole() {
+        return Role.valueOf(role);
+    }
+
+    public void setRole(Role role) {
+        this.role = role.name();
+    }
 }

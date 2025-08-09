@@ -28,7 +28,8 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "lastLogin", ignore = true)
-    @Mapping(source = "email", target = "email")
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "email", source = "email")
     User toEntity(CreateUserDTO createUserDTO);
 
     UserResponseDTO toResponseDTO(User user);
