@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
 import ericarfs.socialmedia.dto.request.question.CreateQuestionDTO;
+import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.question.QuestionResponseDTO;
+import ericarfs.socialmedia.service.AnswerService;
 import ericarfs.socialmedia.service.QuestionService;
 import jakarta.validation.Valid;
 
@@ -26,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class QuestionController {
     @Autowired
     public QuestionService questionService;
+
+    @Autowired
+    public AnswerService answerService;
 
     @GetMapping()
     public ResponseEntity<List<QuestionResponseDTO>> listQuestions() {
@@ -48,6 +54,18 @@ public class QuestionController {
                 .buildAndExpand(response.id())
                 .toUri())
                 .body(response);
+    }
+
+    @PostMapping("/{id}/answer")
+    public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable Long id,
+            @Valid @RequestBody CreateAnswerDTO requestDto) {
+        AnswerResponseDTO response = answerService.create(requestDto, id);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(response.id())
+                .toUri())
+                .body(response);
+
     }
 
     @DeleteMapping("/{id}")

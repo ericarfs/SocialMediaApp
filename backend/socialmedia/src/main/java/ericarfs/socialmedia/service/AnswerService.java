@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
@@ -37,6 +39,16 @@ public class AnswerService {
         return answerMapper.listEntityToListDTO(answerRepository.findAll());
     }
 
+    public List<AnswerResponseDTO> findAllByUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
+    }
+
     public AnswerResponseDTO findById(Long id) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
@@ -44,11 +56,27 @@ public class AnswerService {
         return answerMapper.toResponseDTO(answer);
     }
 
-    public AnswerResponseDTO create(CreateAnswerDTO createAnswerDTO) {
-        User author = userRepository.findByUsername(createAnswerDTO.author())
+    public AnswerResponseDTO findByIdAndUser(Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        Question question = questionRepository.findById(createAnswerDTO.question())
+        Answer answer = answerRepository.findByIdAndAuthor(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        return answerMapper.toResponseDTO(answer);
+    }
+
+    public AnswerResponseDTO create(CreateAnswerDTO createAnswerDTO, Long questionId) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User author = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        Question question = questionRepository.findByIdAndSentTo(questionId, author)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
         if (!question.getSentTo().getUsername().equals(author.getUsername())) {
@@ -70,8 +98,14 @@ public class AnswerService {
     }
 
     public void delete(Long id) {
-        if (!answerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Answer not found.");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (!answerRepository.existsByIdAndAuthor(id, user)) {
+            throw new ResourceNotFoundException("Answer not found or does not belong to the user.");
         }
         try {
             answerRepository.deleteById(id);

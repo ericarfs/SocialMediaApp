@@ -26,25 +26,14 @@ public class AnswerController {
 
     @GetMapping
     public ResponseEntity<List<AnswerResponseDTO>> listAnswers() {
-        List<AnswerResponseDTO> list = answerService.findAll();
+        List<AnswerResponseDTO> list = answerService.findAllByUser();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AnswerResponseDTO> listAnswerById(@PathVariable Long id) {
-        AnswerResponseDTO answer = answerService.findById(id);
+        AnswerResponseDTO answer = answerService.findByIdAndUser(id);
         return ResponseEntity.ok().body(answer);
-    }
-
-    @PostMapping
-    public ResponseEntity<AnswerResponseDTO> create(@Valid @RequestBody CreateAnswerDTO requestDto) {
-        AnswerResponseDTO response = answerService.create(requestDto);
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri())
-                .body(response);
-
     }
 
     @DeleteMapping("/{id}")
