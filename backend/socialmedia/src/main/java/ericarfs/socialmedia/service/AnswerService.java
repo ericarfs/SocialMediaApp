@@ -76,18 +76,21 @@ public class AnswerService {
         User author = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        Question question = questionRepository.findByIdAndSentTo(questionId, author)
+        Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(questionId, author)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
 
         if (!question.getSentTo().getUsername().equals(author.getUsername())) {
             throw new PermissionDeniedException("Invalid operation.");
         }
 
+        question.setAnswered(true);
+
         Answer answer = answerMapper.toEntity(createAnswerDTO);
         answer.setQuestion(question);
         answer.setAuthor(author);
 
         try {
+            questionRepository.save(question);
             answer = answerRepository.save(answer);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());

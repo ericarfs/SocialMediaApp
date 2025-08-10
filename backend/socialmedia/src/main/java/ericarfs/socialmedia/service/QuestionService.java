@@ -41,7 +41,7 @@ public class QuestionService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        return questionMapper.listEntityToListDTO(questionRepository.findBySentTo(user));
+        return questionMapper.listEntityToListDTO(questionRepository.findBySentToAndIsAnsweredFalse(user));
     }
 
     public QuestionResponseDTO findById(Long id) {
@@ -58,7 +58,7 @@ public class QuestionService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        Question question = questionRepository.findByIdAndSentTo(id, user)
+        Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(id, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found or does not belong to the user."));
 
         return questionMapper.toResponseDTO(question);

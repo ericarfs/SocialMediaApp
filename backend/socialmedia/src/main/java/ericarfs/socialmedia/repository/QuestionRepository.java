@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    Optional<Question> findByIdAndSentTo(Long id, User sentTo);
+    Optional<Question> findByIdAndSentToAndIsAnsweredFalse(Long id, User sentTo);
 
-    List<Question> findBySentTo(User sentTo);
+    List<Question> findBySentToAndIsAnsweredFalse(User sentTo);
 
     boolean existsByIdAndSentTo(Long id, User sentTo);
 
