@@ -5,5 +5,5 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateAnswerDTO(
-                @NotNull @NotBlank @NotEmpty String body) {
+                @NotBlank(message = "Body is required.") @NotNull(message = "Body is required.") @NotEmpty(message = "Body is required.") String body) {
 }
