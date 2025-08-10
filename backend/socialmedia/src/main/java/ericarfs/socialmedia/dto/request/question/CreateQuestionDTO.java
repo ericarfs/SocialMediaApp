@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record CreateQuestionDTO(
-        @NotBlank @NotNull @NotEmpty String sentBy,
-        @NotBlank @NotNull @NotEmpty String sentTo,
-        @NotBlank @NotNull @NotEmpty String body,
-        @NotNull boolean anon) {
+                @NotBlank @NotNull @NotEmpty String body,
+                @NotNull boolean anon) {
 }

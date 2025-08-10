@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,26 +28,26 @@ public class QuestionController {
     public QuestionService questionService;
 
     @GetMapping()
-    public ResponseEntity<List<QuestionResponseDTO>> listUsers() {
-        List<QuestionResponseDTO> list = questionService.findAll();
+    public ResponseEntity<List<QuestionResponseDTO>> listQuestions() {
+        List<QuestionResponseDTO> list = questionService.findAllByUser();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<QuestionResponseDTO> listQuestionById(@PathVariable Long id) {
-        QuestionResponseDTO question = questionService.findById(id);
+        QuestionResponseDTO question = questionService.findByIdAndUser(id);
         return ResponseEntity.ok().body(question);
     }
 
-    @PostMapping
-    public ResponseEntity<QuestionResponseDTO> create(@Valid @RequestBody CreateQuestionDTO requestDto) {
-        QuestionResponseDTO response = questionService.create(requestDto);
+    @PostMapping("/{username}")
+    public ResponseEntity<QuestionResponseDTO> create(@PathVariable String username,
+            @Valid @RequestBody CreateQuestionDTO requestDto) {
+        QuestionResponseDTO response = questionService.create(requestDto, username);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.id())
                 .toUri())
                 .body(response);
-
     }
 
     @DeleteMapping("/{id}")

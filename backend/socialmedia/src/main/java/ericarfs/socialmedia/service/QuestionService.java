@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.question.CreateQuestionDTO;
@@ -32,6 +34,16 @@ public class QuestionService {
         return questionMapper.listEntityToListDTO(questionRepository.findAll());
     }
 
+    public List<QuestionResponseDTO> findAllByUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return questionMapper.listEntityToListDTO(questionRepository.findBySentTo(user));
+    }
+
     public QuestionResponseDTO findById(Long id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
@@ -39,11 +51,27 @@ public class QuestionService {
         return questionMapper.toResponseDTO(question);
     }
 
-    public QuestionResponseDTO create(CreateQuestionDTO createQuestionDTO) {
-        User sentBy = userRepository.findByUsername(createQuestionDTO.sentBy())
+    public QuestionResponseDTO findByIdAndUser(Long id) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        User sentTo = userRepository.findByUsername(createQuestionDTO.sentTo())
+        Question question = questionRepository.findByIdAndSentTo(id, user)
+                .orElseThrow(() -> new ResourceNotFoundException("Question not found or does not belong to the user."));
+
+        return questionMapper.toResponseDTO(question);
+    }
+
+    public QuestionResponseDTO create(CreateQuestionDTO createQuestionDTO, String usernameSentTo) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User sentBy = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        User sentTo = userRepository.findByUsername(usernameSentTo)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         if (createQuestionDTO.anon() && !sentTo.isAllowAnonQuestions()) {
@@ -65,8 +93,14 @@ public class QuestionService {
     }
 
     public void delete(Long id) {
-        if (!questionRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Question not found.");
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (!questionRepository.existsByIdAndSentTo(id, user)) {
+            throw new ResourceNotFoundException("Question not found or does not belong to the user.");
         }
         try {
             questionRepository.deleteById(id);
