@@ -84,6 +84,10 @@ public class AnswerService {
             throw new PermissionDeniedException("Invalid operation.");
         }
 
+        if (answerRepository.existsByIdAndAuthor(questionId, author)) {
+            throw new DatabaseException("Duplicated answer.");
+        }
+
         question.setAnswered(true);
 
         Answer answer = answerMapper.toEntity(createAnswerDTO);
@@ -95,7 +99,6 @@ public class AnswerService {
             answer = answerRepository.save(answer);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
-
         }
 
         return answerMapper.toResponseDTO(answer);
