@@ -1,6 +1,7 @@
 package ericarfs.socialmedia.entity;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -47,10 +48,10 @@ public class Answer {
     private User author;
 
     @ManyToMany
-    private List<User> likes;
+    private List<User> likes = new ArrayList<>();
 
     @ManyToMany
-    private List<User> shares;
+    private List<User> shares = new ArrayList<>();
 
     @CreatedDate
     private Instant createdAt;

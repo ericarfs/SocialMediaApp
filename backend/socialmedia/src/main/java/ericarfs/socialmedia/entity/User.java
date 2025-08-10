@@ -1,6 +1,7 @@
 package ericarfs.socialmedia.entity;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -49,29 +50,29 @@ public class User {
     private String icon;
 
     @ManyToMany
-    private List<User> following;
+    private List<User> following = new ArrayList<>();
 
     @JsonIgnore
     @ManyToMany(mappedBy = "following")
-    private List<User> followers;
+    private List<User> followers = new ArrayList<>();
 
     @ManyToMany
-    private List<User> blockedUsers;
+    private List<User> blockedUsers = new ArrayList<>();
 
     @ManyToMany
-    private List<User> silencedUsers;
+    private List<User> silencedUsers = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "sentBy")
-    private List<Question> sentQuestions;
+    private List<Question> sentQuestions = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "sentTo")
-    private List<Question> receivedQuestions;
+    private List<Question> receivedQuestions = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "author")
-    private List<Answer> answeredQuestions;
+    private List<Answer> answeredQuestions = new ArrayList<>();
 
     private String questionHelper = "Ask me anything!";
 
