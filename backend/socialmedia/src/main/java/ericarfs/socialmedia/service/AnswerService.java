@@ -1,5 +1,6 @@
 package ericarfs.socialmedia.service;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,24 @@ public class AnswerService {
             throw new DatabaseException(e.getMessage());
 
         }
+
+        return answerMapper.toResponseDTO(answer);
+    }
+
+    public AnswerResponseDTO update(CreateAnswerDTO createAnswerDTO, Long answerId) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        User author = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        Answer answer = answerRepository.findByIdAndAuthor(answerId, author)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        answer.setBody(createAnswerDTO.body());
+        answer.setUpdatedAt(Instant.now());
+
+        answer = answerRepository.save(answer);
 
         return answerMapper.toResponseDTO(answer);
     }
