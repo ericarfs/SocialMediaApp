@@ -1,5 +1,6 @@
 package ericarfs.socialmedia.service;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,28 +83,29 @@ public class UserService {
     }
 
     public UserResponseDTO update(UpdateUserDTO updateUserDTO) {
-        User updateUser = authService.getAuthenticatedUser();
+        User user = authService.getAuthenticatedUser();
 
-        if (updateUserDTO.username() != null && !updateUser.getUsername().equals(updateUserDTO.username())) {
+        if (updateUserDTO.username() != null && !user.getUsername().equals(updateUserDTO.username())) {
             if (userRepository.existsByUsername(updateUserDTO.username())) {
                 throw new DatabaseException("Username already taken.");
             }
-            updateUser.setUsername(updateUserDTO.username());
+            user.setUsername(updateUserDTO.username());
         }
 
         if (updateUserDTO.questionHelper() != null) {
-            updateUser.setQuestionHelper(updateUserDTO.questionHelper());
+            user.setQuestionHelper(updateUserDTO.questionHelper());
         }
         if (updateUserDTO.allowAnonQuestions() != null) {
-            updateUser.setAllowAnonQuestions(updateUserDTO.allowAnonQuestions());
+            user.setAllowAnonQuestions(updateUserDTO.allowAnonQuestions());
         }
         if (updateUserDTO.icon() != null) {
-            updateUser.setIcon(updateUserDTO.icon());
+            user.setIcon(updateUserDTO.icon());
         }
 
-        User saveUser = userRepository.save(updateUser);
+        user.setUpdatedAt(Instant.now());
+        user = userRepository.save(user);
 
-        return userMapper.toResponseDTO(saveUser);
+        return userMapper.toResponseDTO(user);
     }
 
     public void delete(Long id) {
