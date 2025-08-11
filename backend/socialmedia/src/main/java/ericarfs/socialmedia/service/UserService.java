@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.user.CreateUserDTO;
 import ericarfs.socialmedia.dto.request.user.UpdateUserDTO;
+import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.entity.enums.Role;
@@ -54,6 +55,13 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
         return userMapper.toResponseDTO(user);
+    }
+
+    public UserProfileDTO findProfile(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return userMapper.toProfileDTO(user);
     }
 
     public UserResponseDTO create(CreateUserDTO createUserDTO) {

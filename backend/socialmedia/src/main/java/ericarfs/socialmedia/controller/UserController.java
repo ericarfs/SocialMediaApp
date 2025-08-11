@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ericarfs.socialmedia.dto.request.user.UpdateUserDTO;
+import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.service.UserService;
 import jakarta.validation.Valid;
@@ -30,6 +31,12 @@ public class UserController {
     @GetMapping("/{username}")
     public ResponseEntity<UserResponseDTO> listUserByUsername(@PathVariable String username) {
         UserResponseDTO user = userService.findByUsername(username);
+        return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping("/{username}/profile")
+    public ResponseEntity<UserProfileDTO> readUserProfile(@PathVariable String username) {
+        UserProfileDTO user = userService.findProfile(username);
         return ResponseEntity.ok().body(user);
     }
 

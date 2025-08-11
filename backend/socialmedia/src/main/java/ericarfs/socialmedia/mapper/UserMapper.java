@@ -7,11 +7,12 @@ import org.mapstruct.Mapping;
 
 import ericarfs.socialmedia.dto.request.user.CreateUserDTO;
 import ericarfs.socialmedia.dto.response.user.UserListDTO;
+import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.entity.util.Email;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = MapperHelper.class)
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "icon", ignore = true)
@@ -33,6 +34,8 @@ public interface UserMapper {
     User toEntity(CreateUserDTO createUserDTO);
 
     UserResponseDTO toResponseDTO(User user);
+
+    UserProfileDTO toProfileDTO(User user);
 
     UserListDTO toListDTO(User user);
 
