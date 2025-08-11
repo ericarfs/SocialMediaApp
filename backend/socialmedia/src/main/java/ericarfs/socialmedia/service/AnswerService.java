@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
@@ -20,7 +18,6 @@ import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.AnswerMapper;
 import ericarfs.socialmedia.repository.AnswerRepository;
 import ericarfs.socialmedia.repository.QuestionRepository;
-import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
 public class AnswerService {
@@ -31,21 +28,17 @@ public class AnswerService {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AnswerMapper answerMapper;
 
     @Autowired
-    private AnswerMapper answerMapper;
+    private AuthService authService;
 
     public List<AnswerResponseDTO> findAll() {
         return answerMapper.listEntityToListDTO(answerRepository.findAll());
     }
 
     public List<AnswerResponseDTO> findAllByUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User user = authService.getAuthenticatedUser();
 
         return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
     }
@@ -58,11 +51,7 @@ public class AnswerService {
     }
 
     public AnswerResponseDTO findByIdAndUser(Long id) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User user = authService.getAuthenticatedUser();
 
         Answer answer = answerRepository.findByIdAndAuthor(id, user)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
@@ -71,11 +60,7 @@ public class AnswerService {
     }
 
     public AnswerResponseDTO create(CreateAnswerDTO createAnswerDTO, Long questionId) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-
-        User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User author = authService.getAuthenticatedUser();
 
         Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(questionId, author)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
@@ -105,11 +90,7 @@ public class AnswerService {
     }
 
     public AnswerResponseDTO update(CreateAnswerDTO createAnswerDTO, Long answerId) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-
-        User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User author = authService.getAuthenticatedUser();
 
         Answer answer = answerRepository.findByIdAndAuthor(answerId, author)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
@@ -123,11 +104,7 @@ public class AnswerService {
     }
 
     public void delete(Long id) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User user = authService.getAuthenticatedUser();
 
         if (!answerRepository.existsByIdAndAuthor(id, user)) {
             throw new ResourceNotFoundException("Answer not found or does not belong to the user.");

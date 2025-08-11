@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +28,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AuthService authService;
 
     public List<UserResponseDTO> findAll() {
         return userMapper.listEntityToListDTO(userRepository.findAll());
@@ -81,13 +82,9 @@ public class UserService {
     }
 
     public UserResponseDTO update(UpdateUserDTO updateUserDTO) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = userDetails.getUsername();
+        User updateUser = authService.getAuthenticatedUser();
 
-        User updateUser = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        if (updateUserDTO.username() != null && !username.equals(updateUserDTO.username())) {
+        if (updateUserDTO.username() != null && !updateUser.getUsername().equals(updateUserDTO.username())) {
             if (userRepository.existsByUsername(updateUserDTO.username())) {
                 throw new DatabaseException("Username already taken.");
             }
