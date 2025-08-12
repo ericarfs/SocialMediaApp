@@ -33,7 +33,7 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AnswerResponseDTO> listAnswerById(@PathVariable Long id) {
-        AnswerResponseDTO answer = answerService.findByIdAndUser(id);
+        AnswerResponseDTO answer = answerService.findById(id);
         return ResponseEntity.ok().body(answer);
     }
 
