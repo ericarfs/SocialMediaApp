@@ -18,6 +18,7 @@ import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.AnswerMapper;
 import ericarfs.socialmedia.repository.AnswerRepository;
 import ericarfs.socialmedia.repository.QuestionRepository;
+import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
 public class AnswerService {
@@ -26,6 +27,9 @@ public class AnswerService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AnswerMapper answerMapper;
@@ -40,6 +44,12 @@ public class AnswerService {
     public List<AnswerResponseDTO> findAllByUser() {
         User user = authService.getAuthenticatedUser();
 
+        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
+    }
+
+    public List<AnswerResponseDTO> findByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
         return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
     }
 

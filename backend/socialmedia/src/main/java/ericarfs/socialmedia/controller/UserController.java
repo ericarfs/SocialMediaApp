@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ericarfs.socialmedia.dto.request.user.UpdateUserDTO;
+import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
+import ericarfs.socialmedia.service.AnswerService;
 import ericarfs.socialmedia.service.UserService;
 import jakarta.validation.Valid;
 
@@ -28,6 +30,9 @@ public class UserController {
     @Autowired
     public UserService userService;
 
+    @Autowired
+    public AnswerService answerService;
+
     @GetMapping("/{username}")
     public ResponseEntity<UserResponseDTO> listUserByUsername(@PathVariable String username) {
         UserResponseDTO user = userService.findByUsername(username);
@@ -38,6 +43,12 @@ public class UserController {
     public ResponseEntity<UserProfileDTO> readUserProfile(@PathVariable String username) {
         UserProfileDTO user = userService.findProfile(username);
         return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping("/{username}/answers")
+    public ResponseEntity<List<AnswerResponseDTO>> readUserAnswers(@PathVariable String username) {
+        List<AnswerResponseDTO> list = answerService.findByUsername(username);
+        return ResponseEntity.ok().body(list);
     }
 
     @PatchMapping
