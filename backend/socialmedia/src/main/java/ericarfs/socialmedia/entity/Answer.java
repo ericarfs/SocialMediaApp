@@ -2,7 +2,9 @@ package ericarfs.socialmedia.entity;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -48,14 +50,54 @@ public class Answer {
     private User author;
 
     @ManyToMany
-    private List<User> likes = new ArrayList<>();
+    private Set<User> likes = new HashSet<>();
 
     @ManyToMany
-    private List<User> shares = new ArrayList<>();
+    private Set<User> shares = new HashSet<>();
 
     @CreatedDate
     private Instant createdAt;
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    public int getLikesCount() {
+        return this.getLikes().size();
+    }
+
+    public int getSharesCount() {
+        return this.getShares().size();
+    }
+
+    public boolean hasUserLiked(User user) {
+        return this.likes.contains(user);
+    }
+
+    public boolean hasUserShared(User user) {
+        return this.shares.contains(user);
+    }
+
+    public void toggleLike(User userThatLiked) {
+        Set<User> likesCopy = new HashSet<>(this.likes);
+
+        if (likesCopy.contains(userThatLiked)) {
+            likesCopy.remove(userThatLiked);
+        } else {
+            likesCopy.add(userThatLiked);
+        }
+
+        this.likes = likesCopy;
+    }
+
+    public void toggleShare(User userThatShared) {
+        Set<User> sharesCopy = new HashSet<>(this.shares);
+
+        if (sharesCopy.contains(userThatShared)) {
+            sharesCopy.remove(userThatShared);
+        } else {
+            sharesCopy.add(userThatShared);
+        }
+
+        this.shares = sharesCopy;
+    }
 }

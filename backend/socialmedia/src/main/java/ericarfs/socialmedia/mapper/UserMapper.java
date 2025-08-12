@@ -39,7 +39,9 @@ public interface UserMapper {
 
     UserListDTO toListDTO(User user);
 
-    List<UserResponseDTO> listEntityToListDTO(Iterable<User> users);
+    List<UserListDTO> listEntityToListDTO(Iterable<User> users);
+
+    List<UserResponseDTO> listEntityToResponseListDTO(Iterable<User> users);
 
     default Email mapEmail(String email) {
         return new Email(email);

@@ -35,7 +35,7 @@ public class UserService {
     private AuthService authService;
 
     public List<UserResponseDTO> findAll() {
-        return userMapper.listEntityToListDTO(userRepository.findAll());
+        return userMapper.listEntityToResponseListDTO(userRepository.findAll());
     }
 
     public User findByEmail(String email) {

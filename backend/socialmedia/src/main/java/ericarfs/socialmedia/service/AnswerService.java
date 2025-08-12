@@ -2,6 +2,7 @@ package ericarfs.socialmedia.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
+import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
+import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
+import ericarfs.socialmedia.dto.response.user.UserListDTO;
+import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.Question;
 import ericarfs.socialmedia.entity.User;
@@ -16,6 +21,7 @@ import ericarfs.socialmedia.exceptions.DatabaseException;
 import ericarfs.socialmedia.exceptions.PermissionDeniedException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.AnswerMapper;
+import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.AnswerRepository;
 import ericarfs.socialmedia.repository.QuestionRepository;
 import ericarfs.socialmedia.repository.UserRepository;
@@ -33,6 +39,9 @@ public class AnswerService {
 
     @Autowired
     private AnswerMapper answerMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private AuthService authService;
@@ -111,6 +120,52 @@ public class AnswerService {
         answer = answerRepository.save(answer);
 
         return answerMapper.toResponseDTO(answer);
+    }
+
+    public List<UserListDTO> findUsersHasLiked(Long id) {
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        return userMapper.listEntityToListDTO(answer.getLikes());
+    }
+
+    public LikeResponseDTO toggleLike(Long id) {
+        User user = authService.getAuthenticatedUser();
+
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        answer.toggleLike(user);
+
+        answer = answerRepository.save(answer);
+
+        int likesCount = answer.getLikesCount();
+        boolean hasUserLiked = answer.hasUserLiked(user);
+
+        return new LikeResponseDTO(likesCount, hasUserLiked);
+    }
+
+    public List<UserListDTO> findUsersHasShared(Long id) {
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        return userMapper.listEntityToListDTO(answer.getShares());
+    }
+
+    public ShareResponseDTO toggleShare(Long id) {
+        User user = authService.getAuthenticatedUser();
+
+        Answer answer = answerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+
+        answer.toggleShare(user);
+
+        answer = answerRepository.save(answer);
+
+        int sharesCount = answer.getSharesCount();
+        boolean hasUserShared = answer.hasUserShared(user);
+
+        return new ShareResponseDTO(sharesCount, hasUserShared);
     }
 
     public void delete(Long id) {
