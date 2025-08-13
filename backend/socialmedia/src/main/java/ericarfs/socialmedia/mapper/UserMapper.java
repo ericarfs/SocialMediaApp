@@ -16,6 +16,7 @@ import ericarfs.socialmedia.entity.util.Email;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "icon", ignore = true)
+    @Mapping(target = "bio", ignore = true)
     @Mapping(target = "following", ignore = true)
     @Mapping(target = "followers", ignore = true)
     @Mapping(target = "blockedUsers", ignore = true)
@@ -31,10 +32,12 @@ public interface UserMapper {
     @Mapping(target = "lastLogin", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "email", source = "email")
+    @Mapping(target = "displayName", source = "username")
     User toEntity(CreateUserDTO createUserDTO);
 
     UserResponseDTO toResponseDTO(User user);
 
+    @Mapping(target = "isLoggedUser", source = "username", qualifiedByName = "isLoggedUser")
     UserProfileDTO toProfileDTO(User user);
 
     UserListDTO toListDTO(User user);

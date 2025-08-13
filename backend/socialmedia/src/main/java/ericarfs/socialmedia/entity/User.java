@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -40,7 +39,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(length = 48)
+    private String displayName;
+
+    @Column(unique = true, nullable = false, length = 20)
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -50,6 +52,9 @@ public class User {
     private String password;
 
     private String icon;
+
+    @Column(length = 200)
+    private String bio;
 
     @ManyToMany
     private List<User> following = new ArrayList<>();

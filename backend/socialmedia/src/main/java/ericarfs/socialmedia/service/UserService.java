@@ -102,6 +102,12 @@ public class UserService {
             user.setUsername(updateUserDTO.username());
         }
 
+        if (updateUserDTO.displayName() != null) {
+            user.setDisplayName(updateUserDTO.displayName());
+        }
+        if (updateUserDTO.bio() != null) {
+            user.setBio(updateUserDTO.bio());
+        }
         if (updateUserDTO.questionHelper() != null) {
             user.setQuestionHelper(updateUserDTO.questionHelper());
         }
