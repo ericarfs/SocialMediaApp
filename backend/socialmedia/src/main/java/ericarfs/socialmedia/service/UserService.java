@@ -16,9 +16,11 @@ import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.entity.enums.Role;
 import ericarfs.socialmedia.entity.util.Email;
 import ericarfs.socialmedia.exceptions.DatabaseException;
+import ericarfs.socialmedia.exceptions.PermissionDeniedException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -114,6 +116,96 @@ public class UserService {
         user = userRepository.save(user);
 
         return userMapper.toResponseDTO(user);
+    }
+
+    public List<UserResponseDTO> getFollowers(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return userMapper.listEntityToResponseListDTO(user.getFollowers());
+    }
+
+    public List<UserResponseDTO> getFollowing(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return userMapper.listEntityToResponseListDTO(user.getFollowing());
+    }
+
+    public List<UserResponseDTO> getBlockedUsers(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return userMapper.listEntityToResponseListDTO(user.getBlockedUsers());
+    }
+
+    public List<UserResponseDTO> getSilencedUsers(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return userMapper.listEntityToResponseListDTO(user.getSilencedUsers());
+    }
+
+    @Transactional
+    public boolean followUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToFollow = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (user.getUsername().equals(username)) {
+            throw new PermissionDeniedException("You can not follow yourself.");
+        }
+
+        if (userToFollow.getBlockedUsers().contains(user)) {
+            throw new PermissionDeniedException("You are blocked by this user.");
+        }
+
+        if (user.getBlockedUsers().contains(userToFollow)) {
+            throw new PermissionDeniedException("This user is blocked.");
+        }
+
+        user.toggleFollow(userToFollow);
+
+        userRepository.save(user);
+
+        return user.getFollowing().contains(userToFollow);
+    }
+
+    @Transactional
+    public boolean blockUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToBlock = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (user.getUsername().equals(username)) {
+            throw new PermissionDeniedException("You can not block yourself.");
+        }
+
+        user.toggleBlock(userToBlock);
+
+        userRepository.save(user);
+
+        return user.getBlockedUsers().contains(userToBlock);
+    }
+
+    @Transactional
+    public boolean silenceUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToSilence = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        if (user.getUsername().equals(username)) {
+            throw new PermissionDeniedException("You can not silence yourself.");
+        }
+
+        user.toggleSilence(userToSilence);
+
+        userRepository.save(user);
+
+        return user.getSilencedUsers().contains(userToSilence);
     }
 
     public void delete(Long id) {

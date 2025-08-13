@@ -1,6 +1,8 @@
 package ericarfs.socialmedia.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +51,57 @@ public class UserController {
     public ResponseEntity<List<AnswerResponseDTO>> readUserAnswers(@PathVariable String username) {
         List<AnswerResponseDTO> list = answerService.findByUsername(username);
         return ResponseEntity.ok().body(list);
+    }
+
+    @GetMapping("/{username}/followers")
+    public ResponseEntity<List<UserResponseDTO>> getFollowers(@PathVariable String username) {
+        List<UserResponseDTO> followersList = userService.getFollowers(username);
+        return ResponseEntity.ok().body(followersList);
+    }
+
+    @GetMapping("/{username}/follows")
+    public ResponseEntity<List<UserResponseDTO>> getFollowing(@PathVariable String username) {
+        List<UserResponseDTO> followingList = userService.getFollowing(username);
+        return ResponseEntity.ok().body(followingList);
+    }
+
+    @PatchMapping("/{username}/follows")
+    public ResponseEntity<Map<String, Boolean>> followUser(@PathVariable String username) {
+        boolean isFollowing = userService.followUser(username);
+
+        Map<String, Boolean> response = Collections.singletonMap("isUserFollowed", isFollowing);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{username}/blocks")
+    public ResponseEntity<List<UserResponseDTO>> getBlockedUsers(@PathVariable String username) {
+        List<UserResponseDTO> blockedUsersList = userService.getBlockedUsers(username);
+        return ResponseEntity.ok().body(blockedUsersList);
+    }
+
+    @PatchMapping("/{username}/blocks")
+    public ResponseEntity<Map<String, Boolean>> blockUser(@PathVariable String username) {
+        boolean isBlocked = userService.blockUser(username);
+
+        Map<String, Boolean> response = Collections.singletonMap("isUserBlocked", isBlocked);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{username}/silences")
+    public ResponseEntity<List<UserResponseDTO>> getSilencedUsers(@PathVariable String username) {
+        List<UserResponseDTO> silencedUsersList = userService.getSilencedUsers(username);
+        return ResponseEntity.ok().body(silencedUsersList);
+    }
+
+    @PatchMapping("/{username}/silences")
+    public ResponseEntity<Map<String, Boolean>> silenceUser(@PathVariable String username) {
+        boolean isSilenced = userService.silenceUser(username);
+
+        Map<String, Boolean> response = Collections.singletonMap("isUserSilenced", isSilenced);
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PatchMapping

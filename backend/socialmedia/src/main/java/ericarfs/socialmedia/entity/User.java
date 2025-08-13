@@ -2,7 +2,9 @@ package ericarfs.socialmedia.entity;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -96,5 +98,31 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role.name();
+    }
+
+    public void toggleFollow(User userToFollow) {
+        if (new HashSet<>(this.following).contains(userToFollow)) {
+            this.following.remove(userToFollow);
+        } else {
+            this.following.add(userToFollow);
+        }
+    }
+
+    public void toggleBlock(User userToBlock) {
+        if (new HashSet<>(this.blockedUsers).contains(userToBlock)) {
+            this.blockedUsers.remove(userToBlock);
+        } else {
+            this.blockedUsers.add(userToBlock);
+            this.following.remove(userToBlock);
+            this.followers.remove(userToBlock);
+        }
+    }
+
+    public void toggleSilence(User userToSilence) {
+        if (new HashSet<>(this.silencedUsers).contains(userToSilence)) {
+            this.silencedUsers.remove(userToSilence);
+        } else {
+            this.silencedUsers.add(userToSilence);
+        }
     }
 }
