@@ -12,7 +12,7 @@ import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
-import ericarfs.socialmedia.dto.response.user.UserListDTO;
+import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.Question;
@@ -122,7 +122,7 @@ public class AnswerService {
         return answerMapper.toResponseDTO(answer);
     }
 
-    public List<UserListDTO> findUsersHasLiked(Long id) {
+    public List<UserBasicDTO> findUsersHasLiked(Long id) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
@@ -145,7 +145,7 @@ public class AnswerService {
         return new LikeResponseDTO(likesCount, hasUserLiked);
     }
 
-    public List<UserListDTO> findUsersHasShared(Long id) {
+    public List<UserBasicDTO> findUsersHasShared(Long id) {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 

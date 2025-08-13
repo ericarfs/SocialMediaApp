@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import ericarfs.socialmedia.dto.request.user.CreateUserDTO;
-import ericarfs.socialmedia.dto.response.user.UserListDTO;
+import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.User;
@@ -40,9 +40,9 @@ public interface UserMapper {
     @Mapping(target = "isLoggedUser", source = "username", qualifiedByName = "isLoggedUser")
     UserProfileDTO toProfileDTO(User user);
 
-    UserListDTO toListDTO(User user);
+    UserBasicDTO toListDTO(User user);
 
-    List<UserListDTO> listEntityToListDTO(Iterable<User> users);
+    List<UserBasicDTO> listEntityToListDTO(Iterable<User> users);
 
     List<UserResponseDTO> listEntityToResponseListDTO(Iterable<User> users);
 
