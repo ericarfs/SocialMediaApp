@@ -20,13 +20,18 @@ public interface QuestionMapper {
 
     List<QuestionResponseDTO> listEntityToListDTO(Iterable<Question> question);
 
-    @Mapping(target = "sentBy", expression = "java(setSentByUser(question))")
+    @Mapping(target = "sentBy", expression = "java(getSentByUser(question))")
+    @Mapping(target = "timeCreation", expression = "java(getTimeCreation(question))")
     QuestionResponseDTO toResponseDTO(Question question);
 
-    default String setSentByUser(Question question) {
+    default String getSentByUser(Question question) {
         if (question.isAnon()) {
             return "Anonymous";
         }
         return question.getSentBy().getUsername();
+    }
+
+    default String getTimeCreation(Question question) {
+        return question.getFormattedCreationDate();
     }
 }

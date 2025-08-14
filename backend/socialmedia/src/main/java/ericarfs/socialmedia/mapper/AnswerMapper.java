@@ -8,6 +8,7 @@ import org.mapstruct.Mapping;
 import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
+import ericarfs.socialmedia.entity.Question;
 
 @Mapper(componentModel = "spring", uses = MapperHelper.class)
 public interface AnswerMapper {
@@ -20,7 +21,12 @@ public interface AnswerMapper {
     @Mapping(target = "author", ignore = true)
     Answer toEntity(CreateAnswerDTO createAnswerDTO);
 
+    @Mapping(target = "question.timeCreation", expression = "java(getTimeCreation(question))")
     AnswerResponseDTO toResponseDTO(Answer answer);
 
     List<AnswerResponseDTO> listEntityToListDTO(Iterable<Answer> answers);
+
+    default String getTimeCreation(Question question) {
+        return question.getFormattedCreationDate();
+    }
 }
