@@ -4,6 +4,7 @@ import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.service.AuthService;
 
@@ -23,4 +24,17 @@ public class MapperHelper {
         return user.getUsername().equals(username);
     }
 
+    @Named("hasUserLiked")
+    public boolean mapHasUserLiked(Answer answer) {
+        User user = authService.getAuthenticatedUser();
+
+        return answer.getLikes().contains(user);
+    }
+
+    @Named("hasUserShared")
+    public boolean mapHasUserShared(Answer answer) {
+        User user = authService.getAuthenticatedUser();
+
+        return answer.getShares().contains(user);
+    }
 }

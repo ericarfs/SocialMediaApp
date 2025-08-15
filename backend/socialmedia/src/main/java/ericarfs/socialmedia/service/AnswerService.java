@@ -137,10 +137,7 @@ public class AnswerService {
 
         answer = answerRepository.save(answer);
 
-        int likesCount = answer.getLikesCount();
-        boolean hasUserLiked = answer.hasUserLiked(user);
-
-        return new LikeResponseDTO(likesCount, hasUserLiked);
+        return answerMapper.toLikeResponseDTO(answer);
     }
 
     public List<UserBasicDTO> findUsersHasShared(Long id) {
@@ -160,10 +157,7 @@ public class AnswerService {
 
         answer = answerRepository.save(answer);
 
-        int sharesCount = answer.getSharesCount();
-        boolean hasUserShared = answer.hasUserShared(user);
-
-        return new ShareResponseDTO(sharesCount, hasUserShared);
+        return answerMapper.toShareResponseDTO(answer);
     }
 
     public void delete(Long id) {
