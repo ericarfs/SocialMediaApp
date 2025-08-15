@@ -44,14 +44,10 @@ public class QuestionController {
     }
 
     @PostMapping("/{username}")
-    public ResponseEntity<QuestionResponseDTO> create(@PathVariable String username,
+    public ResponseEntity<String> create(@PathVariable String username,
             @Valid @RequestBody CreateQuestionDTO requestDto) {
-        QuestionResponseDTO response = questionService.create(requestDto, username);
-        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(response.id())
-                .toUri())
-                .body(response);
+        questionService.create(requestDto, username);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/answer")
@@ -63,7 +59,6 @@ public class QuestionController {
                 .buildAndExpand(response.id())
                 .toUri())
                 .body(response);
-
     }
 
     @DeleteMapping("/{id}")

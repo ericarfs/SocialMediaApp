@@ -57,7 +57,7 @@ public class QuestionService {
         return questionMapper.toResponseDTO(question);
     }
 
-    public QuestionResponseDTO create(CreateQuestionDTO createQuestionDTO, String usernameSentTo) {
+    public void create(CreateQuestionDTO createQuestionDTO, String usernameSentTo) {
         User sentBy = authService.getAuthenticatedUser();
 
         User sentTo = userRepository.findByUsername(usernameSentTo)
@@ -77,8 +77,6 @@ public class QuestionService {
             throw new DatabaseException(e.getMessage());
 
         }
-
-        return questionMapper.toResponseDTO(question);
     }
 
     public void delete(Long id) {
