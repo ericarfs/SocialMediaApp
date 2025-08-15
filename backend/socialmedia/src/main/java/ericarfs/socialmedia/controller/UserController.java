@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -36,31 +35,31 @@ public class UserController {
     public AnswerService answerService;
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponseDTO> listUserByUsername(@PathVariable String username) {
+    public ResponseEntity<UserResponseDTO> findByUsername(@PathVariable String username) {
         UserResponseDTO user = userService.findByUsername(username);
         return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/{username}/profile")
-    public ResponseEntity<UserProfileDTO> readUserProfile(@PathVariable String username) {
+    public ResponseEntity<UserProfileDTO> findProfile(@PathVariable String username) {
         UserProfileDTO user = userService.findProfile(username);
         return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/{username}/answers")
-    public ResponseEntity<List<AnswerResponseDTO>> readUserAnswers(@PathVariable String username) {
+    public ResponseEntity<List<AnswerResponseDTO>> findAnswers(@PathVariable String username) {
         List<AnswerResponseDTO> list = answerService.findByUsername(username);
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{username}/followers")
-    public ResponseEntity<List<UserResponseDTO>> getFollowers(@PathVariable String username) {
+    public ResponseEntity<List<UserResponseDTO>> findFollowers(@PathVariable String username) {
         List<UserResponseDTO> followersList = userService.getFollowers(username);
         return ResponseEntity.ok().body(followersList);
     }
 
     @GetMapping("/{username}/follows")
-    public ResponseEntity<List<UserResponseDTO>> getFollowing(@PathVariable String username) {
+    public ResponseEntity<List<UserResponseDTO>> findFollowing(@PathVariable String username) {
         List<UserResponseDTO> followingList = userService.getFollowing(username);
         return ResponseEntity.ok().body(followingList);
     }
@@ -75,7 +74,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/blocks")
-    public ResponseEntity<List<UserResponseDTO>> getBlockedUsers(@PathVariable String username) {
+    public ResponseEntity<List<UserResponseDTO>> findBlockedUsers(@PathVariable String username) {
         List<UserResponseDTO> blockedUsersList = userService.getBlockedUsers(username);
         return ResponseEntity.ok().body(blockedUsersList);
     }
@@ -90,7 +89,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/silences")
-    public ResponseEntity<List<UserResponseDTO>> getSilencedUsers(@PathVariable String username) {
+    public ResponseEntity<List<UserResponseDTO>> findSilencedUsers(@PathVariable String username) {
         List<UserResponseDTO> silencedUsersList = userService.getSilencedUsers(username);
         return ResponseEntity.ok().body(silencedUsersList);
     }

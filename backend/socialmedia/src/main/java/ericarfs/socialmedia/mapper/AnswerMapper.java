@@ -5,7 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
+import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.Question;
@@ -19,7 +19,7 @@ public interface AnswerMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "question", ignore = true)
     @Mapping(target = "author", ignore = true)
-    Answer toEntity(CreateAnswerDTO createAnswerDTO);
+    Answer toEntity(AnswerRequestDTO createAnswerDTO);
 
     @Mapping(target = "question.timeCreation", expression = "java(getTimeCreation(question))")
     @Mapping(target = "timeCreation", expression = "java(getTimeCreation(answer))")

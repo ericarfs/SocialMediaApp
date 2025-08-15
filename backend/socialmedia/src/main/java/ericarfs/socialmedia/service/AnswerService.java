@@ -2,18 +2,16 @@ package ericarfs.socialmedia.service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
+import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
-import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.Question;
 import ericarfs.socialmedia.entity.User;
@@ -78,7 +76,7 @@ public class AnswerService {
         return answerMapper.toResponseDTO(answer);
     }
 
-    public AnswerResponseDTO create(CreateAnswerDTO createAnswerDTO, Long questionId) {
+    public AnswerResponseDTO create(AnswerRequestDTO createAnswerDTO, Long questionId) {
         User author = authService.getAuthenticatedUser();
 
         Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(questionId, author)
@@ -108,7 +106,7 @@ public class AnswerService {
         return answerMapper.toResponseDTO(answer);
     }
 
-    public AnswerResponseDTO update(CreateAnswerDTO createAnswerDTO, Long answerId) {
+    public AnswerResponseDTO update(AnswerRequestDTO createAnswerDTO, Long answerId) {
         User author = authService.getAuthenticatedUser();
 
         Answer answer = answerRepository.findByIdAndAuthor(answerId, author)

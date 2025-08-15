@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import ericarfs.socialmedia.dto.request.answer.CreateAnswerDTO;
+import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
 import ericarfs.socialmedia.dto.request.question.CreateQuestionDTO;
 import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.question.QuestionResponseDTO;
@@ -34,13 +32,13 @@ public class QuestionController {
     public AnswerService answerService;
 
     @GetMapping()
-    public ResponseEntity<List<QuestionResponseDTO>> listQuestions() {
+    public ResponseEntity<List<QuestionResponseDTO>> findAll() {
         List<QuestionResponseDTO> list = questionService.findAllByUser();
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponseDTO> listQuestionById(@PathVariable Long id) {
+    public ResponseEntity<QuestionResponseDTO> findById(@PathVariable Long id) {
         QuestionResponseDTO question = questionService.findByIdAndUser(id);
         return ResponseEntity.ok().body(question);
     }
@@ -58,7 +56,7 @@ public class QuestionController {
 
     @PostMapping("/{id}/answer")
     public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable Long id,
-            @Valid @RequestBody CreateAnswerDTO requestDto) {
+            @Valid @RequestBody AnswerRequestDTO requestDto) {
         AnswerResponseDTO response = answerService.create(requestDto, id);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
