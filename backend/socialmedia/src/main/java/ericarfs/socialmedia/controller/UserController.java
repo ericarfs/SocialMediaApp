@@ -52,6 +52,12 @@ public class UserController {
         return ResponseEntity.ok().body(list);
     }
 
+    @GetMapping("/{username}/activities")
+    public ResponseEntity<List<AnswerResponseDTO>> findActivities(@PathVariable String username) {
+        List<AnswerResponseDTO> list = answerService.findAnswersAndSharesByUser(username);
+        return ResponseEntity.ok().body(list);
+    }
+
     @GetMapping("/{username}/followers")
     public ResponseEntity<List<UserResponseDTO>> findFollowers(@PathVariable String username) {
         List<UserResponseDTO> followersList = userService.getFollowers(username);

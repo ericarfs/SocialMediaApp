@@ -2,6 +2,7 @@ package ericarfs.socialmedia.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,6 +15,7 @@ import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 import ericarfs.socialmedia.entity.Answer;
 import ericarfs.socialmedia.entity.Question;
+import ericarfs.socialmedia.entity.Share;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.exceptions.DatabaseException;
 import ericarfs.socialmedia.exceptions.PermissionDeniedException;
@@ -22,6 +24,7 @@ import ericarfs.socialmedia.mapper.AnswerMapper;
 import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.AnswerRepository;
 import ericarfs.socialmedia.repository.QuestionRepository;
+import ericarfs.socialmedia.repository.ShareRepository;
 import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
@@ -34,6 +37,9 @@ public class AnswerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ShareRepository shareRepository;
 
     @Autowired
     private AnswerMapper answerMapper;
@@ -58,6 +64,13 @@ public class AnswerService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
         return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
+    }
+
+    public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        return answerMapper.listEntityToListDTO(answerRepository.findAuthoredAndSharedAnswers(user.getId()));
     }
 
     public AnswerResponseDTO findById(Long id) {
@@ -144,7 +157,7 @@ public class AnswerService {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        return userMapper.listEntityToListDTO(answer.getShares());
+        return userMapper.listEntityToListDTO(answer.sharedUsers());
     }
 
     public ShareResponseDTO toggleShare(Long id) {
@@ -153,9 +166,16 @@ public class AnswerService {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        answer.toggleShare(user);
+        Optional<Share> share = shareRepository.findByAnswerAndUser(answer, user);
 
-        answer = answerRepository.save(answer);
+        if (share.isPresent()) {
+            shareRepository.delete(share.get());
+        } else {
+            Share newShare = new Share();
+            newShare.setAnswer(answer);
+            newShare.setUser(user);
+            shareRepository.save(newShare);
+        }
 
         return answerMapper.toShareResponseDTO(answer);
     }

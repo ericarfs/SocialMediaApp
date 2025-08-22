@@ -28,13 +28,13 @@ public class MapperHelper {
     public boolean mapHasUserLiked(Answer answer) {
         User user = authService.getAuthenticatedUser();
 
-        return answer.getLikes().contains(user);
+        return answer.hasUserLiked(user);
     }
 
     @Named("hasUserShared")
     public boolean mapHasUserShared(Answer answer) {
         User user = authService.getAuthenticatedUser();
 
-        return answer.getShares().contains(user);
+        return answer.hasUserShared(user);
     }
 }

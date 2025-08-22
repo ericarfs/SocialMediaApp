@@ -2,8 +2,11 @@ package ericarfs.socialmedia.entity;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -51,14 +55,20 @@ public class Answer {
     @ManyToMany
     private Set<User> likes = new HashSet<>();
 
-    @ManyToMany
-    private Set<User> shares = new HashSet<>();
+    @OneToMany(mappedBy = "answer")
+    private List<Share> shares = new ArrayList<>();
 
     @CreatedDate
     private Instant createdAt = Instant.now();
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    public List<User> sharedUsers() {
+        return this.shares.stream()
+                .map(Share::getUser)
+                .collect(Collectors.toList());
+    }
 
     public int getLikesCount() {
         return this.getLikes().size();
@@ -73,7 +83,7 @@ public class Answer {
     }
 
     public boolean hasUserShared(User user) {
-        return this.shares.contains(user);
+        return this.sharedUsers().contains(user);
     }
 
     public void toggleLike(User userThatLiked) {
@@ -86,18 +96,6 @@ public class Answer {
         }
 
         this.likes = likesCopy;
-    }
-
-    public void toggleShare(User userThatShared) {
-        Set<User> sharesCopy = new HashSet<>(this.shares);
-
-        if (sharesCopy.contains(userThatShared)) {
-            sharesCopy.remove(userThatShared);
-        } else {
-            sharesCopy.add(userThatShared);
-        }
-
-        this.shares = sharesCopy;
     }
 
     public String getFormattedCreationDate() {
