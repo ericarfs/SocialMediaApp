@@ -27,7 +27,7 @@ public class AnswerController {
     @Autowired
     public AnswerService answerService;
 
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<List<AnswerResponseDTO>> findAll() {
         List<AnswerResponseDTO> list = answerService.findAllByUser();
         return ResponseEntity.ok().body(list);

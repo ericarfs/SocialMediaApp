@@ -31,7 +31,7 @@ public class QuestionController {
     @Autowired
     public AnswerService answerService;
 
-    @GetMapping()
+    @GetMapping("/me")
     public ResponseEntity<List<QuestionResponseDTO>> findAll() {
         List<QuestionResponseDTO> list = questionService.findAllByUser();
         return ResponseEntity.ok().body(list);
