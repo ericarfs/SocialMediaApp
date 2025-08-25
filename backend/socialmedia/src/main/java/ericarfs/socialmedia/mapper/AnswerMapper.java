@@ -23,11 +23,9 @@ public interface AnswerMapper {
     @Mapping(target = "author", ignore = true)
     Answer toEntity(AnswerRequestDTO createAnswerDTO);
 
-    @Mapping(target = "likesCount", expression = "java(getLikesCount(answer))")
     @Mapping(target = "hasUserLiked", source = "answer", qualifiedByName = "hasUserLiked")
     LikeResponseDTO toLikeResponseDTO(Answer answer);
 
-    @Mapping(target = "sharesCount", expression = "java(getSharesCount(answer))")
     @Mapping(target = "hasUserShared", source = "answer", qualifiedByName = "hasUserShared")
     ShareResponseDTO toShareResponseDTO(Answer answer);
 
@@ -45,13 +43,5 @@ public interface AnswerMapper {
 
     default String getTimeCreation(Answer answer) {
         return answer.getFormattedCreationDate();
-    }
-
-    default int getLikesCount(Answer answer) {
-        return answer.getLikesCount();
-    }
-
-    default int getSharesCount(Answer answer) {
-        return answer.getSharesCount();
     }
 }
