@@ -97,6 +97,14 @@ public class User {
 
     private Instant lastLogin;
 
+    public int getFollowingCount() {
+        return this.getFollowing().size();
+    }
+
+    public int getFollowersCount() {
+        return this.getFollowers().size();
+    }
+
     public Role getRole() {
         return Role.valueOf(role);
     }
