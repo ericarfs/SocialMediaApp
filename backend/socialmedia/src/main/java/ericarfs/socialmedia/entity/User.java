@@ -113,29 +113,41 @@ public class User {
         this.role = role.name();
     }
 
-    public void toggleFollow(User userToFollow) {
-        if (new HashSet<>(this.following).contains(userToFollow)) {
-            this.following.remove(userToFollow);
-        } else {
+    public void follow(User userToFollow) {
+        if (!new HashSet<>(this.following).contains(userToFollow)) {
             this.following.add(userToFollow);
         }
     }
 
-    public void toggleBlock(User userToBlock) {
-        if (new HashSet<>(this.blockedUsers).contains(userToBlock)) {
-            this.blockedUsers.remove(userToBlock);
-        } else {
+    public void unfollow(User userToUnfollow) {
+        if (new HashSet<>(this.following).contains(userToUnfollow)) {
+            this.following.remove(userToUnfollow);
+        }
+    }
+
+    public void block(User userToBlock) {
+        if (!new HashSet<>(this.blockedUsers).contains(userToBlock)) {
             this.blockedUsers.add(userToBlock);
             this.following.remove(userToBlock);
             this.followers.remove(userToBlock);
         }
     }
 
-    public void toggleSilence(User userToSilence) {
+    public void unblock(User userToBlock) {
+        if (new HashSet<>(this.blockedUsers).contains(userToBlock)) {
+            this.blockedUsers.remove(userToBlock);
+        }
+    }
+
+    public void silence(User userToSilence) {
+        if (!new HashSet<>(this.silencedUsers).contains(userToSilence)) {
+            this.silencedUsers.add(userToSilence);
+        }
+    }
+
+    public void unsilence(User userToSilence) {
         if (new HashSet<>(this.silencedUsers).contains(userToSilence)) {
             this.silencedUsers.remove(userToSilence);
-        } else {
-            this.silencedUsers.add(userToSilence);
         }
     }
 }

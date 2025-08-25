@@ -1,6 +1,5 @@
 package ericarfs.socialmedia.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,12 +51,15 @@ public class UserProfileController {
     }
 
     @PostMapping("/blocks/{username}")
-    public ResponseEntity<Map<String, Boolean>> blockUser(@PathVariable String username) {
-        boolean isBlocked = userService.blockUser(username);
+    public ResponseEntity<Void> blockUser(@PathVariable String username) {
+        userService.blockUser(username);
+        return ResponseEntity.noContent().build();
+    }
 
-        Map<String, Boolean> response = Collections.singletonMap("isUserBlocked", isBlocked);
-
-        return ResponseEntity.ok().body(response);
+    @DeleteMapping("/blocks/{username}")
+    public ResponseEntity<Void> unblockUser(@PathVariable String username) {
+        userService.unblockUser(username);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/silences")
@@ -67,21 +69,27 @@ public class UserProfileController {
     }
 
     @PostMapping("/silences/{username}")
-    public ResponseEntity<Map<String, Boolean>> silenceUser(@PathVariable String username) {
-        boolean isSilenced = userService.silenceUser(username);
-
-        Map<String, Boolean> response = Collections.singletonMap("isUserSilenced", isSilenced);
-
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Void> silenceUser(@PathVariable String username) {
+        userService.silenceUser(username);
+        return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/follows/{username}")
-    public ResponseEntity<Map<String, Boolean>> followUser(@PathVariable String username) {
-        boolean isFollowing = userService.followUser(username);
+    @DeleteMapping("/silences/{username}")
+    public ResponseEntity<Void> unsilenceUser(@PathVariable String username) {
+        userService.unsilenceUser(username);
+        return ResponseEntity.noContent().build();
+    }
 
-        Map<String, Boolean> response = Collections.singletonMap("isUserFollowed", isFollowing);
+    @PostMapping("/follows/{username}")
+    public ResponseEntity<Void> followUser(@PathVariable String username) {
+        userService.followUser(username);
+        return ResponseEntity.noContent().build();
+    }
 
-        return ResponseEntity.ok().body(response);
+    @DeleteMapping("/follows/{username}")
+    public ResponseEntity<Map<String, Boolean>> unfollowUser(@PathVariable String username) {
+        userService.unfollowUser(username);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/feed")

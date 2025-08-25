@@ -20,7 +20,6 @@ import ericarfs.socialmedia.exceptions.PermissionDeniedException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.UserRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -150,8 +149,7 @@ public class UserService {
         return userMapper.listEntityToResponseListDTO(user.getSilencedUsers());
     }
 
-    @Transactional
-    public boolean followUser(String username) {
+    public void followUser(String username) {
         User user = authService.getAuthenticatedUser();
 
         User userToFollow = userRepository.findByUsername(username)
@@ -169,15 +167,23 @@ public class UserService {
             throw new PermissionDeniedException("This user is blocked.");
         }
 
-        user.toggleFollow(userToFollow);
+        user.follow(userToFollow);
 
         userRepository.save(user);
-
-        return user.getFollowing().contains(userToFollow);
     }
 
-    @Transactional
-    public boolean blockUser(String username) {
+    public void unfollowUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToUnfollow = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        user.unfollow(userToUnfollow);
+
+        userRepository.save(user);
+    }
+
+    public void blockUser(String username) {
         User user = authService.getAuthenticatedUser();
 
         User userToBlock = userRepository.findByUsername(username)
@@ -187,15 +193,23 @@ public class UserService {
             throw new PermissionDeniedException("You can not block yourself.");
         }
 
-        user.toggleBlock(userToBlock);
+        user.block(userToBlock);
 
         userRepository.save(user);
-
-        return user.getBlockedUsers().contains(userToBlock);
     }
 
-    @Transactional
-    public boolean silenceUser(String username) {
+    public void unblockUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToUnblock = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        user.unblock(userToUnblock);
+
+        userRepository.save(user);
+    }
+
+    public void silenceUser(String username) {
         User user = authService.getAuthenticatedUser();
 
         User userToSilence = userRepository.findByUsername(username)
@@ -205,11 +219,20 @@ public class UserService {
             throw new PermissionDeniedException("You can not silence yourself.");
         }
 
-        user.toggleSilence(userToSilence);
+        user.silence(userToSilence);
 
         userRepository.save(user);
+    }
 
-        return user.getSilencedUsers().contains(userToSilence);
+    public void unsilenceUser(String username) {
+        User user = authService.getAuthenticatedUser();
+
+        User userToUnsilence = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+
+        user.silence(userToUnsilence);
+
+        userRepository.save(user);
     }
 
     public void delete(Long id) {
