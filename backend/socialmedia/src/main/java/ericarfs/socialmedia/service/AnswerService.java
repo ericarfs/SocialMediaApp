@@ -180,6 +180,12 @@ public class AnswerService {
         return answerMapper.toShareResponseDTO(answer);
     }
 
+    public List<AnswerResponseDTO> findFollowersActivities() {
+        User user = authService.getAuthenticatedUser();
+
+        return answerMapper.listEntityToListDTO(answerRepository.findFollowersActivities(user.getId()));
+    }
+
     public void delete(Long id) {
         User user = authService.getAuthenticatedUser();
 

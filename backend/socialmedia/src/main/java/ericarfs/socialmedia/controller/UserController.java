@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -85,7 +86,7 @@ public class UserController {
         return ResponseEntity.ok().body(blockedUsersList);
     }
 
-    @PatchMapping("/{username}/blocks")
+    @PostMapping("/{username}/blocks")
     public ResponseEntity<Map<String, Boolean>> blockUser(@PathVariable String username) {
         boolean isBlocked = userService.blockUser(username);
 
@@ -100,13 +101,19 @@ public class UserController {
         return ResponseEntity.ok().body(silencedUsersList);
     }
 
-    @PatchMapping("/{username}/silences")
+    @PostMapping("/{username}/silences")
     public ResponseEntity<Map<String, Boolean>> silenceUser(@PathVariable String username) {
         boolean isSilenced = userService.silenceUser(username);
 
         Map<String, Boolean> response = Collections.singletonMap("isUserSilenced", isSilenced);
 
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<List<AnswerResponseDTO>> findFollowersActivities() {
+        List<AnswerResponseDTO> list = answerService.findFollowersActivities();
+        return ResponseEntity.ok().body(list);
     }
 
     @PatchMapping
