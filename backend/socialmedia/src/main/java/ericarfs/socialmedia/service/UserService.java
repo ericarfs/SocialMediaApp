@@ -138,16 +138,14 @@ public class UserService {
         return userMapper.listEntityToResponseListDTO(user.getFollowing());
     }
 
-    public List<UserResponseDTO> getBlockedUsers(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+    public List<UserResponseDTO> getBlockedUsers() {
+        User user = authService.getAuthenticatedUser();
 
         return userMapper.listEntityToResponseListDTO(user.getBlockedUsers());
     }
 
-    public List<UserResponseDTO> getSilencedUsers(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+    public List<UserResponseDTO> getSilencedUsers() {
+        User user = authService.getAuthenticatedUser();
 
         return userMapper.listEntityToResponseListDTO(user.getSilencedUsers());
     }
