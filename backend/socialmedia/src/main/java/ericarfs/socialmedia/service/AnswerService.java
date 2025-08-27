@@ -157,7 +157,8 @@ public class AnswerService {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        return userMapper.listEntityToListDTO(answer.sharedUsers());
+        List<User> sharedUsers = shareRepository.findSharedUsersByAnswerId(answer.getId());
+        return userMapper.listEntityToListDTO(sharedUsers);
     }
 
     public ShareResponseDTO toggleShare(Long id) {

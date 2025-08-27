@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -63,12 +62,6 @@ public class Answer {
     @LastModifiedDate
     private Instant updatedAt;
 
-    public List<User> sharedUsers() {
-        return this.shares.stream()
-                .map(Share::getUser)
-                .collect(Collectors.toList());
-    }
-
     public int getLikesCount() {
         return this.getLikes().size();
     }
@@ -82,7 +75,8 @@ public class Answer {
     }
 
     public boolean hasUserShared(User user) {
-        return this.sharedUsers().contains(user);
+        return this.shares.stream()
+                .anyMatch(share -> share.getUser().equals(user));
     }
 
     public void toggleLike(User userThatLiked) {
