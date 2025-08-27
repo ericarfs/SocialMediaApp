@@ -10,7 +10,6 @@ import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
-import ericarfs.socialmedia.entity.Question;
 
 @Mapper(componentModel = "spring", uses = MapperHelper.class)
 public interface AnswerMapper {
@@ -29,19 +28,11 @@ public interface AnswerMapper {
     @Mapping(target = "hasUserShared", source = "answer", qualifiedByName = "hasUserShared")
     ShareResponseDTO toShareResponseDTO(Answer answer);
 
-    @Mapping(target = "question.timeCreation", expression = "java(getTimeCreation(question))")
-    @Mapping(target = "timeCreation", expression = "java(getTimeCreation(answer))")
+    @Mapping(target = "question.timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
+    @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(answer.getCreatedAt()))")
     @Mapping(target = "likesInfo", source = "answer")
     @Mapping(target = "sharesInfo", source = "answer")
     AnswerResponseDTO toResponseDTO(Answer answer);
 
     List<AnswerResponseDTO> listEntityToListDTO(Iterable<Answer> answers);
-
-    default String getTimeCreation(Question question) {
-        return question.getFormattedCreationDate();
-    }
-
-    default String getTimeCreation(Answer answer) {
-        return answer.getFormattedCreationDate();
-    }
 }

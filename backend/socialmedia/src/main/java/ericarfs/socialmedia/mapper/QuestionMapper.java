@@ -21,7 +21,7 @@ public interface QuestionMapper {
     List<QuestionResponseDTO> listEntityToListDTO(Iterable<Question> question);
 
     @Mapping(target = "sentBy", expression = "java(getSentByUser(question))")
-    @Mapping(target = "timeCreation", expression = "java(getTimeCreation(question))")
+    @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
     QuestionResponseDTO toResponseDTO(Question question);
 
     default String getSentByUser(Question question) {
@@ -29,9 +29,5 @@ public interface QuestionMapper {
             return "Anonymous";
         }
         return question.getSentBy().getUsername();
-    }
-
-    default String getTimeCreation(Question question) {
-        return question.getFormattedCreationDate();
     }
 }
