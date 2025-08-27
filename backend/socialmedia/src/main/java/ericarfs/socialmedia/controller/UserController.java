@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/users/{username}")
 public class UserController {
     @Autowired
     public UserService userService;
@@ -25,37 +25,37 @@ public class UserController {
     @Autowired
     public AnswerService answerService;
 
-    @GetMapping("/{username}")
+    @GetMapping
     public ResponseEntity<UserResponseDTO> findByUsername(@PathVariable String username) {
         UserResponseDTO user = userService.findByUsername(username);
         return ResponseEntity.ok().body(user);
     }
 
-    @GetMapping("/{username}/profile")
+    @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> findProfile(@PathVariable String username) {
         UserProfileDTO user = userService.findProfile(username);
         return ResponseEntity.ok().body(user);
     }
 
-    @GetMapping("/{username}/answers")
+    @GetMapping("/answers")
     public ResponseEntity<List<AnswerResponseDTO>> findAnswers(@PathVariable String username) {
         List<AnswerResponseDTO> list = answerService.findByUsername(username);
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/{username}/activities")
+    @GetMapping("/activities")
     public ResponseEntity<List<AnswerResponseDTO>> findActivities(@PathVariable String username) {
         List<AnswerResponseDTO> list = answerService.findAnswersAndSharesByUser(username);
         return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/{username}/followers")
+    @GetMapping("/followers")
     public ResponseEntity<List<UserResponseDTO>> findFollowers(@PathVariable String username) {
         List<UserResponseDTO> followersList = userService.getFollowers(username);
         return ResponseEntity.ok().body(followersList);
     }
 
-    @GetMapping("/{username}/follows")
+    @GetMapping("/follows")
     public ResponseEntity<List<UserResponseDTO>> findFollowing(@PathVariable String username) {
         List<UserResponseDTO> followingList = userService.getFollowing(username);
         return ResponseEntity.ok().body(followingList);

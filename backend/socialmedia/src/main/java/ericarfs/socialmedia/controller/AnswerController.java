@@ -22,55 +22,49 @@ import ericarfs.socialmedia.service.AnswerService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/answers")
+@RequestMapping("/api/answers/{id}")
 public class AnswerController {
     @Autowired
     public AnswerService answerService;
 
-    @GetMapping("/me")
-    public ResponseEntity<List<AnswerResponseDTO>> findAll() {
-        List<AnswerResponseDTO> list = answerService.findAllByUser();
-        return ResponseEntity.ok().body(list);
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping
     public ResponseEntity<AnswerResponseDTO> findById(@PathVariable Long id) {
         AnswerResponseDTO answer = answerService.findById(id);
         return ResponseEntity.ok().body(answer);
     }
 
-    @GetMapping("/{id}/likes")
+    @GetMapping("/likes")
     public ResponseEntity<List<UserBasicDTO>> findLikes(@PathVariable Long id) {
         List<UserBasicDTO> users = answerService.findUsersHasLiked(id);
         return ResponseEntity.ok().body(users);
     }
 
-    @PatchMapping("/{id}/likes")
+    @PatchMapping("/likes")
     public ResponseEntity<LikeResponseDTO> like(@PathVariable Long id) {
         LikeResponseDTO response = answerService.toggleLike(id);
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/{id}/shares")
+    @GetMapping("/shares")
     public ResponseEntity<List<UserBasicDTO>> findShares(@PathVariable Long id) {
         List<UserBasicDTO> users = answerService.findUsersHasShared(id);
         return ResponseEntity.ok().body(users);
     }
 
-    @PatchMapping("/{id}/shares")
+    @PatchMapping("/shares")
     public ResponseEntity<ShareResponseDTO> share(@PathVariable Long id) {
         ShareResponseDTO response = answerService.toggleShare(id);
         return ResponseEntity.ok().body(response);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     public ResponseEntity<AnswerResponseDTO> update(@PathVariable Long id,
             @Valid @RequestBody AnswerRequestDTO requestDto) {
         AnswerResponseDTO answer = answerService.update(requestDto, id);
         return ResponseEntity.ok().body(answer);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         answerService.delete(id);
         return ResponseEntity.noContent().build();
