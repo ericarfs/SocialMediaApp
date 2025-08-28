@@ -45,24 +45,21 @@ public class UserService {
     }
 
     public UserResponseDTO findById(Long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
+                .map(userMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        return userMapper.toResponseDTO(user);
     }
 
     public UserResponseDTO findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
+                .map(userMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        return userMapper.toResponseDTO(user);
     }
 
     public UserProfileDTO findProfile(String username) {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
+                .map(userMapper::toProfileDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-
-        return userMapper.toProfileDTO(user);
     }
 
     public UserResponseDTO create(CreateUserDTO createUserDTO) {

@@ -36,25 +36,21 @@ public class QuestionService {
     }
 
     public List<QuestionResponseDTO> findAllByUser() {
-        User user = authService.getAuthenticatedUser();
-
-        return questionMapper.listEntityToListDTO(questionRepository.findBySentToAndIsAnsweredFalse(user));
+        return questionMapper.listEntityToListDTO(
+                questionRepository.findBySentToAndIsAnsweredFalse(
+                        authService.getAuthenticatedUser()));
     }
 
     public QuestionResponseDTO findById(Long id) {
-        Question question = questionRepository.findById(id)
+        return questionRepository.findById(id)
+                .map(questionMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found."));
-
-        return questionMapper.toResponseDTO(question);
     }
 
     public QuestionResponseDTO findByIdAndUser(Long id) {
-        User user = authService.getAuthenticatedUser();
-
-        Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(id, user)
+        return questionRepository.findByIdAndSentToAndIsAnsweredFalse(id, authService.getAuthenticatedUser())
+                .map(questionMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found or does not belong to the user."));
-
-        return questionMapper.toResponseDTO(question);
     }
 
     public void create(CreateQuestionDTO createQuestionDTO, String usernameSentTo) {
@@ -80,9 +76,7 @@ public class QuestionService {
     }
 
     public void delete(Long id) {
-        User user = authService.getAuthenticatedUser();
-
-        if (!questionRepository.existsByIdAndSentTo(id, user)) {
+        if (!questionRepository.existsByIdAndSentTo(id, authService.getAuthenticatedUser())) {
             throw new ResourceNotFoundException("Question not found or does not belong to the user.");
         }
         try {

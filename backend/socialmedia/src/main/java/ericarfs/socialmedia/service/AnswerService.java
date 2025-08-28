@@ -55,15 +55,14 @@ public class AnswerService {
     }
 
     public List<AnswerResponseDTO> findAllByUser() {
-        User user = authService.getAuthenticatedUser();
-
-        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
+        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(authService.getAuthenticatedUser()));
     }
 
     public List<AnswerResponseDTO> findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
+                .map(answerRepository::findByAuthor)
+                .map(answerMapper::listEntityToListDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
-        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(user));
     }
 
     public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username) {
@@ -74,19 +73,15 @@ public class AnswerService {
     }
 
     public AnswerResponseDTO findById(Long id) {
-        Answer answer = answerRepository.findById(id)
+        return answerRepository.findById(id)
+                .map(answerMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
-
-        return answerMapper.toResponseDTO(answer);
     }
 
     public AnswerResponseDTO findByIdAndUser(Long id) {
-        User user = authService.getAuthenticatedUser();
-
-        Answer answer = answerRepository.findByIdAndAuthor(id, user)
+        return answerRepository.findByIdAndAuthor(id, authService.getAuthenticatedUser())
+                .map(answerMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
-
-        return answerMapper.toResponseDTO(answer);
     }
 
     public AnswerResponseDTO create(AnswerRequestDTO createAnswerDTO, Long questionId) {
@@ -120,9 +115,7 @@ public class AnswerService {
     }
 
     public AnswerResponseDTO update(AnswerRequestDTO createAnswerDTO, Long answerId) {
-        User author = authService.getAuthenticatedUser();
-
-        Answer answer = answerRepository.findByIdAndAuthor(answerId, author)
+        Answer answer = answerRepository.findByIdAndAuthor(answerId, authService.getAuthenticatedUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
         answer.setBody(createAnswerDTO.body());
@@ -157,8 +150,7 @@ public class AnswerService {
         Answer answer = answerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        List<User> sharedUsers = shareRepository.findSharedUsersByAnswerId(answer.getId());
-        return userMapper.listEntityToListDTO(sharedUsers);
+        return userMapper.listEntityToListDTO(shareRepository.findSharedUsersByAnswerId(answer.getId()));
     }
 
     public ShareResponseDTO toggleShare(Long id) {
@@ -188,9 +180,7 @@ public class AnswerService {
     }
 
     public void delete(Long id) {
-        User user = authService.getAuthenticatedUser();
-
-        if (!answerRepository.existsByIdAndAuthor(id, user)) {
+        if (!answerRepository.existsByIdAndAuthor(id, authService.getAuthenticatedUser())) {
             throw new ResourceNotFoundException("Answer not found or does not belong to the user.");
         }
         try {
