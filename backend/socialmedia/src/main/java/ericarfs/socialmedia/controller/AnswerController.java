@@ -2,7 +2,6 @@ package ericarfs.socialmedia.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +23,11 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/answers/{id}")
 public class AnswerController {
-    @Autowired
-    public AnswerService answerService;
+    public final AnswerService answerService;
+
+    public AnswerController(AnswerService answerService) {
+        this.answerService = answerService;
+    }
 
     @GetMapping
     public ResponseEntity<AnswerResponseDTO> findById(@PathVariable Long id) {

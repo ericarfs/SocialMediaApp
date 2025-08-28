@@ -3,7 +3,6 @@ package ericarfs.socialmedia.service;
 import java.time.Instant;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,17 +22,24 @@ import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public UserService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            UserMapper userMapper,
+            AuthService authService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+        this.authService = authService;
+    }
 
     public List<UserResponseDTO> findAll() {
         return userMapper.listEntityToResponseListDTO(userRepository.findAll());

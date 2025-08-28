@@ -1,6 +1,5 @@
 package ericarfs.socialmedia.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,11 +14,16 @@ import ericarfs.socialmedia.security.JwtUtil;
 
 @Service
 public class AuthService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthService(
+            UserRepository userRepository,
+            AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+    }
 
     public User getAuthenticatedUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -3,7 +3,6 @@ package ericarfs.socialmedia.controller;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,11 +27,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/api/users/me")
 public class UserProfileController {
-    @Autowired
-    public UserService userService;
+    public final UserService userService;
+    public final AnswerService answerService;
 
-    @Autowired
-    public AnswerService answerService;
+    public UserProfileController(
+            UserService userService,
+            AnswerService answerService) {
+        this.userService = userService;
+        this.answerService = answerService;
+    }
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDTO> findProfile() {

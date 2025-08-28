@@ -2,7 +2,6 @@ package ericarfs.socialmedia.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +18,23 @@ import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
 public class QuestionService {
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final QuestionMapper questionMapper;
 
-    @Autowired
-    private QuestionMapper questionMapper;
+    private final AuthService authService;
 
-    @Autowired
-    private AuthService authService;
+    public QuestionService(
+            QuestionRepository questionRepository,
+            UserRepository userRepository,
+            QuestionMapper questionMapper,
+            AuthService authService) {
+        this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
+        this.questionMapper = questionMapper;
+        this.authService = authService;
+    }
 
     public List<QuestionResponseDTO> findAll() {
         return questionMapper.listEntityToListDTO(questionRepository.findAll());

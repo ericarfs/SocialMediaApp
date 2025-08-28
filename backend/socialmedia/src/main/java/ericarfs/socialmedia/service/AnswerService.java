@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -29,26 +28,32 @@ import ericarfs.socialmedia.repository.UserRepository;
 
 @Service
 public class AnswerService {
-    @Autowired
-    private AnswerRepository answerRepository;
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
+    private final UserRepository userRepository;
+    private final ShareRepository shareRepository;
 
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final AnswerMapper answerMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final AuthService authService;
 
-    @Autowired
-    private ShareRepository shareRepository;
-
-    @Autowired
-    private AnswerMapper answerMapper;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private AuthService authService;
+    public AnswerService(
+            AnswerRepository answerRepository,
+            QuestionRepository questionRepository,
+            UserRepository userRepository,
+            ShareRepository shareRepository,
+            AnswerMapper answerMapper,
+            UserMapper userMapper,
+            AuthService authService) {
+        this.answerRepository = answerRepository;
+        this.questionRepository = questionRepository;
+        this.userRepository = userRepository;
+        this.shareRepository = shareRepository;
+        this.answerMapper = answerMapper;
+        this.userMapper = userMapper;
+        this.authService = authService;
+    }
 
     public List<AnswerResponseDTO> findAll() {
         return answerMapper.listEntityToListDTO(answerRepository.findAll());

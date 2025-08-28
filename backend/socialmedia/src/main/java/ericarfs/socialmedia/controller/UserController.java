@@ -2,7 +2,6 @@ package ericarfs.socialmedia.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,11 +18,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @RequestMapping("/api/users/{username}")
 public class UserController {
-    @Autowired
-    public UserService userService;
+    public final UserService userService;
+    public final AnswerService answerService;
 
-    @Autowired
-    public AnswerService answerService;
+    public UserController(
+            UserService userService,
+            AnswerService answerService) {
+        this.userService = userService;
+        this.answerService = answerService;
+    }
 
     @GetMapping
     public ResponseEntity<UserResponseDTO> findByUsername(@PathVariable String username) {
