@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
@@ -70,11 +71,11 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username) {
+    public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username, Pageable pageable) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        return answerMapper.listEntityToListDTO(answerRepository.findAuthoredAndSharedAnswers(user.getId()));
+        return answerMapper.listEntityToListDTO(answerRepository.findAuthoredAndSharedAnswers(user.getId(), pageable));
     }
 
     public AnswerResponseDTO findById(Long id) {
@@ -178,10 +179,10 @@ public class AnswerService {
         return answerMapper.toShareResponseDTO(answer);
     }
 
-    public List<AnswerResponseDTO> findFollowersActivities() {
+    public List<AnswerResponseDTO> findFollowersActivities(Pageable pageable) {
         User user = authService.getAuthenticatedUser();
 
-        return answerMapper.listEntityToListDTO(answerRepository.findFollowersActivities(user.getId()));
+        return answerMapper.listEntityToListDTO(answerRepository.findFollowersActivities(user.getId(), pageable));
     }
 
     public void delete(Long id) {

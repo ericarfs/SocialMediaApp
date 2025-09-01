@@ -2,6 +2,7 @@ package ericarfs.socialmedia.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,8 +36,8 @@ public class QuestionController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<QuestionResponseDTO>> findAll() {
-        List<QuestionResponseDTO> list = questionService.findAllByUser();
+    public ResponseEntity<List<QuestionResponseDTO>> findAll(Pageable pageable) {
+        List<QuestionResponseDTO> list = questionService.findAllByUser(pageable);
         return ResponseEntity.ok().body(list);
     }
 

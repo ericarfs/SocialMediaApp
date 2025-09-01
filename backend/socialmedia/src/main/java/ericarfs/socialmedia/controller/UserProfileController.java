@@ -3,6 +3,7 @@ package ericarfs.socialmedia.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -96,8 +97,8 @@ public class UserProfileController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<AnswerResponseDTO>> findFollowersActivities() {
-        List<AnswerResponseDTO> list = answerService.findFollowersActivities();
+    public ResponseEntity<List<AnswerResponseDTO>> findFollowersActivities(Pageable pageable) {
+        List<AnswerResponseDTO> list = answerService.findFollowersActivities(pageable);
         return ResponseEntity.ok().body(list);
     }
 
