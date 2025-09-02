@@ -20,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,6 +44,8 @@ public class User {
     private String displayName;
 
     @Column(unique = true, nullable = false, length = 20)
+    @Size(min = 4, message = "Username must have at least 4 characters.")
+    @Size(max = 20, message = "Username must have up to 20 characters.")
     private String username;
 
     @Column(unique = true, nullable = false)

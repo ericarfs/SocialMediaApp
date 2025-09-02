@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -76,6 +77,25 @@ public class ResourceExceptionHandler {
 		body.put("status", HttpStatus.BAD_REQUEST.value());
 		body.put("error", "Bad request");
 		body.put("message", "Validation failed for the request.");
+		body.put("details", errors);
+
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+		Map<String, String> errors = new HashMap<>();
+		ex.getConstraintViolations().forEach(violation -> {
+			String fieldName = violation.getPropertyPath().toString();
+			String errorMessage = violation.getMessage();
+			errors.put(fieldName, errorMessage);
+		});
+
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("timestamp", LocalDateTime.now());
+		body.put("status", HttpStatus.BAD_REQUEST.value());
+		body.put("error", "Bad Request");
+		body.put("message", "Validation failed for the entity.");
 		body.put("details", errors);
 
 		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
