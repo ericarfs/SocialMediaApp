@@ -1,11 +1,11 @@
-package ericarfs.socialmedia.dto.response.answer;
+package ericarfs.socialmedia.dto.response.post;
 
 import ericarfs.socialmedia.dto.response.question.QuestionResponseDTO;
 
-public record AnswerResponseDTO(
+public record PostResponseDTO(
                 String id,
                 QuestionResponseDTO question,
-                String body,
+                String answer,
                 String author,
                 String timeCreation,
                 LikeResponseDTO likesInfo,

@@ -9,11 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
-import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
-import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
-import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
+import ericarfs.socialmedia.dto.response.post.PostResponseDTO;
+import ericarfs.socialmedia.dto.response.post.LikeResponseDTO;
+import ericarfs.socialmedia.dto.response.post.ShareResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 import ericarfs.socialmedia.entity.Answer;
+import ericarfs.socialmedia.entity.Post;
 import ericarfs.socialmedia.entity.Question;
 import ericarfs.socialmedia.entity.Share;
 import ericarfs.socialmedia.entity.User;
@@ -21,76 +22,86 @@ import ericarfs.socialmedia.exceptions.DatabaseException;
 import ericarfs.socialmedia.exceptions.PermissionDeniedException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.AnswerMapper;
+import ericarfs.socialmedia.mapper.PostMapper;
 import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.AnswerRepository;
+import ericarfs.socialmedia.repository.PostRepository;
 import ericarfs.socialmedia.repository.QuestionRepository;
 import ericarfs.socialmedia.repository.ShareRepository;
 import ericarfs.socialmedia.repository.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AnswerService {
+    private final PostRepository postRepository;
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ShareRepository shareRepository;
 
     private final AnswerMapper answerMapper;
+    private final PostMapper postMapper;
     private final UserMapper userMapper;
 
     private final AuthService authService;
 
     public AnswerService(
+            PostRepository postRepository,
             AnswerRepository answerRepository,
             QuestionRepository questionRepository,
             UserRepository userRepository,
             ShareRepository shareRepository,
             AnswerMapper answerMapper,
+            PostMapper postMapper,
             UserMapper userMapper,
             AuthService authService) {
+        this.postRepository = postRepository;
         this.answerRepository = answerRepository;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.shareRepository = shareRepository;
         this.answerMapper = answerMapper;
+        this.postMapper = postMapper;
         this.userMapper = userMapper;
         this.authService = authService;
     }
 
-    public List<AnswerResponseDTO> findAll() {
-        return answerMapper.listEntityToListDTO(answerRepository.findAll());
+    public List<PostResponseDTO> findAll() {
+        return postMapper.listEntityToListDTO(postRepository.findAll());
     }
 
-    public List<AnswerResponseDTO> findAllByUser() {
-        return answerMapper.listEntityToListDTO(answerRepository.findByAuthor(authService.getAuthenticatedUser()));
+    public List<PostResponseDTO> findAllByUser() {
+        return postMapper.listEntityToListDTO(postRepository.findByAuthor(authService.getAuthenticatedUser()));
     }
 
-    public List<AnswerResponseDTO> findByUsername(String username) {
+    public List<PostResponseDTO> findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(answerRepository::findByAuthor)
-                .map(answerMapper::listEntityToListDTO)
+                .map(postRepository::findByAuthor)
+                .map(postMapper::listEntityToListDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username, Pageable pageable) {
+    public List<PostResponseDTO> findPostsAndSharesByUser(String username, Pageable pageable) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        return answerMapper.listEntityToListDTO(answerRepository.findAuthoredAndSharedAnswers(user.getId(), pageable));
+        return postMapper.listEntityToListDTO(postRepository.findAuthoredAndSharedPosts(user.getId(), pageable));
     }
 
-    public AnswerResponseDTO findById(Long id) {
-        return answerRepository.findById(id)
-                .map(answerMapper::toResponseDTO)
+    public PostResponseDTO findById(Long id) {
+        return postRepository.findById(id)
+                .map(postMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
     }
 
-    public AnswerResponseDTO findByIdAndUser(Long id) {
-        return answerRepository.findByIdAndAuthor(id, authService.getAuthenticatedUser())
-                .map(answerMapper::toResponseDTO)
+    public PostResponseDTO findByIdAndUser(Long id) {
+        return postRepository.findByIdAndAuthor(id, authService.getAuthenticatedUser())
+                .map(postMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
     }
 
-    public AnswerResponseDTO create(AnswerRequestDTO createAnswerDTO, Long questionId) {
+    @Transactional
+    public PostResponseDTO create(AnswerRequestDTO createAnswerDTO, Long questionId) {
         User author = authService.getAuthenticatedUser();
 
         Question question = questionRepository.findByIdAndSentToAndIsAnsweredFalse(questionId, author)
@@ -100,97 +111,103 @@ public class AnswerService {
             throw new PermissionDeniedException("Invalid operation.");
         }
 
-        if (answerRepository.existsByIdAndAuthor(questionId, author)) {
+        if (postRepository.existsByIdAndAuthor(questionId, author)) {
             throw new DatabaseException("Duplicated answer.");
         }
 
-        question.setAnswered(true);
-
         Answer answer = answerMapper.toEntity(createAnswerDTO);
         answer.setQuestion(question);
-        answer.setAuthor(author);
+
+        answer = answerRepository.save(answer);
+
+        Post post = new Post();
+        post.setAnswer(answer);
+        post.setAuthor(author);
+
+        question.setAnswered(true);
 
         try {
             questionRepository.save(question);
-            answer = answerRepository.save(answer);
+            post = postRepository.save(post);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }
 
-        return answerMapper.toResponseDTO(answer);
+        return postMapper.toResponseDTO(post);
     }
 
-    public AnswerResponseDTO update(AnswerRequestDTO createAnswerDTO, Long answerId) {
-        Answer answer = answerRepository.findByIdAndAuthor(answerId, authService.getAuthenticatedUser())
+    public PostResponseDTO update(AnswerRequestDTO createAnswerDTO, Long answerId) {
+        Post post = postRepository.findByIdAndAuthor(answerId,
+                authService.getAuthenticatedUser())
                 .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
 
-        answer.setBody(createAnswerDTO.body());
-        answer.setUpdatedAt(Instant.now());
+        post.getAnswer().setBody(createAnswerDTO.body());
+        post.setUpdatedAt(Instant.now());
 
-        answer = answerRepository.save(answer);
+        post = postRepository.save(post);
 
-        return answerMapper.toResponseDTO(answer);
+        return postMapper.toResponseDTO(post);
     }
 
     public List<UserBasicDTO> findUsersHasLiked(Long id) {
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found."));
 
-        return userMapper.listEntityToListDTO(answer.getLikes());
+        return userMapper.listEntityToListDTO(post.getLikes());
     }
 
     public LikeResponseDTO toggleLike(Long id) {
         User user = authService.getAuthenticatedUser();
 
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found."));
 
-        answer.toggleLike(user);
+        post.toggleLike(user);
 
-        answer = answerRepository.save(answer);
+        post = postRepository.save(post);
 
-        return answerMapper.toLikeResponseDTO(answer);
+        return postMapper.toLikeResponseDTO(post);
     }
 
     public List<UserBasicDTO> findUsersHasShared(Long id) {
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found."));
 
-        return userMapper.listEntityToListDTO(shareRepository.findSharedUsersByAnswerId(answer.getId()));
+        return userMapper.listEntityToListDTO(shareRepository.findSharedUsersByPostId(post.getId()));
     }
 
     public ShareResponseDTO toggleShare(Long id) {
         User user = authService.getAuthenticatedUser();
 
-        Answer answer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer not found."));
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found."));
 
-        Optional<Share> share = shareRepository.findByAnswerAndUser(answer, user);
+        Optional<Share> share = shareRepository.findByPostAndUser(post, user);
 
         if (share.isPresent()) {
             shareRepository.delete(share.get());
         } else {
             Share newShare = new Share();
-            newShare.setAnswer(answer);
+            newShare.setPost(post);
             newShare.setUser(user);
             shareRepository.save(newShare);
         }
 
-        return answerMapper.toShareResponseDTO(answer);
+        return postMapper.toShareResponseDTO(post);
     }
 
-    public List<AnswerResponseDTO> findFollowersActivities(Pageable pageable) {
+    public List<PostResponseDTO> findFollowersActivities(Pageable pageable) {
         User user = authService.getAuthenticatedUser();
 
-        return answerMapper.listEntityToListDTO(answerRepository.findFollowersActivities(user.getId(), pageable));
+        return postMapper.listEntityToListDTO(postRepository.findFollowersActivities(user.getId(), pageable));
     }
 
     public void delete(Long id) {
-        if (!answerRepository.existsByIdAndAuthor(id, authService.getAuthenticatedUser())) {
-            throw new ResourceNotFoundException("Answer not found or does not belong to the user.");
+        if (!postRepository.existsByIdAndAuthor(id, authService.getAuthenticatedUser())) {
+            throw new ResourceNotFoundException("Post not found or does not belong to the user.");
         }
         try {
-            answerRepository.deleteById(id);
+            postRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }

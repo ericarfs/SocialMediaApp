@@ -12,26 +12,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
-import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
-import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
-import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
+import ericarfs.socialmedia.dto.response.post.PostResponseDTO;
+import ericarfs.socialmedia.dto.response.post.LikeResponseDTO;
+import ericarfs.socialmedia.dto.response.post.ShareResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 
 import ericarfs.socialmedia.service.AnswerService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/answers/{id}")
-public class AnswerController {
+@RequestMapping("/api/posts/{id}")
+public class PostController {
     public final AnswerService answerService;
 
-    public AnswerController(AnswerService answerService) {
+    public PostController(AnswerService answerService) {
         this.answerService = answerService;
     }
 
     @GetMapping
-    public ResponseEntity<AnswerResponseDTO> findById(@PathVariable Long id) {
-        AnswerResponseDTO answer = answerService.findById(id);
+    public ResponseEntity<PostResponseDTO> findById(@PathVariable Long id) {
+        PostResponseDTO answer = answerService.findById(id);
         return ResponseEntity.ok().body(answer);
     }
 
@@ -60,9 +60,9 @@ public class AnswerController {
     }
 
     @PatchMapping
-    public ResponseEntity<AnswerResponseDTO> update(@PathVariable Long id,
+    public ResponseEntity<PostResponseDTO> update(@PathVariable Long id,
             @Valid @RequestBody AnswerRequestDTO requestDto) {
-        AnswerResponseDTO answer = answerService.update(requestDto, id);
+        PostResponseDTO answer = answerService.update(requestDto, id);
         return ResponseEntity.ok().body(answer);
     }
 

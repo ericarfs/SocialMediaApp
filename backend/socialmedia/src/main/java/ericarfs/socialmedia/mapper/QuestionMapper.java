@@ -21,7 +21,7 @@ public interface QuestionMapper {
     List<QuestionResponseDTO> listEntityToListDTO(Iterable<Question> question);
 
     @Mapping(target = "sentBy", expression = "java(getSentByUser(question))")
-    @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
+    @Mapping(target = "timeCreation", source = "createdAt")
     QuestionResponseDTO toResponseDTO(Question question);
 
     default String getSentByUser(Question question) {

@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
+import ericarfs.socialmedia.dto.response.post.PostResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.service.AnswerService;
@@ -41,15 +41,15 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    @GetMapping("/answers")
-    public ResponseEntity<List<AnswerResponseDTO>> findAnswers(@PathVariable String username) {
-        List<AnswerResponseDTO> list = answerService.findByUsername(username);
+    @GetMapping("/posts")
+    public ResponseEntity<List<PostResponseDTO>> findPosts(@PathVariable String username) {
+        List<PostResponseDTO> list = answerService.findByUsername(username);
         return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<AnswerResponseDTO>> findActivities(@PathVariable String username, Pageable pageable) {
-        List<AnswerResponseDTO> list = answerService.findAnswersAndSharesByUser(username, pageable);
+    public ResponseEntity<List<PostResponseDTO>> findActivities(@PathVariable String username, Pageable pageable) {
+        List<PostResponseDTO> list = answerService.findPostsAndSharesByUser(username, pageable);
         return ResponseEntity.ok().body(list);
     }
 

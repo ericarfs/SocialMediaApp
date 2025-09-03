@@ -82,7 +82,7 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "author")
-    private List<Answer> answeredQuestions = new ArrayList<>();
+    private List<Post> answeredQuestions = new ArrayList<>();
 
     private String questionHelper = "Ask me anything!";
 

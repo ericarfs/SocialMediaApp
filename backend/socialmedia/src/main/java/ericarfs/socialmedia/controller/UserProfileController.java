@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ericarfs.socialmedia.dto.request.user.UpdateUserDTO;
-import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
+import ericarfs.socialmedia.dto.response.post.PostResponseDTO;
 import ericarfs.socialmedia.dto.response.user.UserProfileDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.service.AnswerService;
@@ -97,8 +97,8 @@ public class UserProfileController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<AnswerResponseDTO>> findFollowersActivities(Pageable pageable) {
-        List<AnswerResponseDTO> list = answerService.findFollowersActivities(pageable);
+    public ResponseEntity<List<PostResponseDTO>> findFollowersActivities(Pageable pageable) {
+        List<PostResponseDTO> list = answerService.findFollowersActivities(pageable);
         return ResponseEntity.ok().body(list);
     }
 

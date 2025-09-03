@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-@Table(name = "answers_shares")
+@Table(name = "posts_shares")
 public class Share {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +34,8 @@ public class Share {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @Column(name = "share_date")
     private Instant shareAt = Instant.now();

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ericarfs.socialmedia.dto.request.answer.AnswerRequestDTO;
 import ericarfs.socialmedia.dto.request.question.CreateQuestionDTO;
-import ericarfs.socialmedia.dto.response.answer.AnswerResponseDTO;
+import ericarfs.socialmedia.dto.response.post.PostResponseDTO;
 import ericarfs.socialmedia.dto.response.question.QuestionResponseDTO;
 import ericarfs.socialmedia.service.AnswerService;
 import ericarfs.socialmedia.service.QuestionService;
@@ -55,9 +55,9 @@ public class QuestionController {
     }
 
     @PostMapping("/{id}/answer")
-    public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable Long id,
+    public ResponseEntity<PostResponseDTO> createAnswer(@PathVariable Long id,
             @Valid @RequestBody AnswerRequestDTO requestDto) {
-        AnswerResponseDTO response = answerService.create(requestDto, id);
+        PostResponseDTO response = answerService.create(requestDto, id);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(response.id())
