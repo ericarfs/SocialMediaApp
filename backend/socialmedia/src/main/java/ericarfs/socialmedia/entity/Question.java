@@ -40,6 +40,10 @@ public class Question {
     @JoinColumn(name = "sent_to_id", nullable = false)
     private User sentTo;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "in_response_to_answer_id")
+    private Answer inResponseToAnswer;
+
     @Column(nullable = false, length = 1024)
     private String body = "Ask me anything!";
 

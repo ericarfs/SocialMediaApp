@@ -54,6 +54,13 @@ public class QuestionController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/in-response-to/{answerId}")
+    public ResponseEntity<String> create(@PathVariable Long answerId,
+            @Valid @RequestBody CreateQuestionDTO requestDto) {
+        questionService.create(requestDto, answerId);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/{id}/answer")
     public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable Long id,
             @Valid @RequestBody AnswerRequestDTO requestDto) {

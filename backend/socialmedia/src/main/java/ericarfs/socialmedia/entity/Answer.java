@@ -56,6 +56,9 @@ public class Answer {
     @OneToMany(mappedBy = "answer")
     private List<Share> shares = new ArrayList<>();
 
+    @OneToMany(mappedBy = "inResponseToAnswer")
+    private List<Question> relatedQuestions = new ArrayList<>();
+
     @CreatedDate
     private Instant createdAt = Instant.now();
 

@@ -16,6 +16,7 @@ public interface QuestionMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "sentTo", ignore = true)
     @Mapping(target = "sentBy", ignore = true)
+    @Mapping(target = "inResponseToAnswer", ignore = true)
     Question toEntity(CreateQuestionDTO createQuestionDTO);
 
     List<QuestionResponseDTO> listEntityToListDTO(Iterable<Question> question);
