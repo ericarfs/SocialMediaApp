@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -71,11 +72,19 @@ public class AnswerService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public List<AnswerResponseDTO> findAnswersAndSharesByUser(String username, Pageable pageable) {
+    public Page<AnswerResponseDTO> findAnswersAndSharesByUser(String username, Pageable pageable) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
 
-        return answerMapper.listEntityToListDTO(answerRepository.findAuthoredAndSharedAnswers(user.getId(), pageable));
+        return answerRepository.findAuthoredAndSharedAnswers(user.getId(), pageable)
+                .map(answerMapper::toResponseDTO);
+    }
+
+    public Page<AnswerResponseDTO> findFollowersActivities(Pageable pageable) {
+        User user = authService.getAuthenticatedUser();
+
+        return answerRepository.findFollowersActivities(user.getId(), pageable)
+                .map(answerMapper::toResponseDTO);
     }
 
     public AnswerResponseDTO findById(Long id) {
@@ -177,12 +186,6 @@ public class AnswerService {
         }
 
         return answerMapper.toShareResponseDTO(answer);
-    }
-
-    public List<AnswerResponseDTO> findFollowersActivities(Pageable pageable) {
-        User user = authService.getAuthenticatedUser();
-
-        return answerMapper.listEntityToListDTO(answerRepository.findFollowersActivities(user.getId(), pageable));
     }
 
     public void delete(Long id) {

@@ -2,7 +2,9 @@ package ericarfs.socialmedia.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,9 +50,12 @@ public class UserController {
     }
 
     @GetMapping("/activities")
-    public ResponseEntity<List<AnswerResponseDTO>> findActivities(@PathVariable String username, Pageable pageable) {
-        List<AnswerResponseDTO> list = answerService.findAnswersAndSharesByUser(username, pageable);
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<PagedModel<AnswerResponseDTO>> findActivities(@PathVariable String username,
+            Pageable pageable) {
+        Page<AnswerResponseDTO> answers = answerService.findAnswersAndSharesByUser(username, pageable);
+
+        PagedModel<AnswerResponseDTO> pagedAnswers = new PagedModel<>(answers);
+        return ResponseEntity.ok().body(pagedAnswers);
     }
 
     @GetMapping("/followers")

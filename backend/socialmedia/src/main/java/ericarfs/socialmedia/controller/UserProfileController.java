@@ -3,7 +3,9 @@ package ericarfs.socialmedia.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -97,9 +99,11 @@ public class UserProfileController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<AnswerResponseDTO>> findFollowersActivities(Pageable pageable) {
-        List<AnswerResponseDTO> list = answerService.findFollowersActivities(pageable);
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<PagedModel<AnswerResponseDTO>> findFollowersActivities(Pageable pageable) {
+        Page<AnswerResponseDTO> answers = answerService.findFollowersActivities(pageable);
+
+        PagedModel<AnswerResponseDTO> pagedAnswers = new PagedModel<>(answers);
+        return ResponseEntity.ok().body(pagedAnswers);
     }
 
     @PatchMapping
