@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ericarfs.socialmedia.dto.request.user.CreateUserDTO;
 import ericarfs.socialmedia.dto.request.user.LoginDTO;
 import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
+import ericarfs.socialmedia.security.JwtUtil;
 import ericarfs.socialmedia.service.AuthService;
 import ericarfs.socialmedia.service.UserService;
 import jakarta.validation.Valid;
@@ -42,15 +43,34 @@ public class AuthController {
                 .body(response);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/token")
     public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
         try {
-            String token = authService.authenticate(loginDTO.username(), loginDTO.password());
+            String accessToken = authService.authenticate(loginDTO.username(), loginDTO.password());
 
-            return ResponseEntity.ok().body(Map.of("token", token));
-
+            String refreshToken = JwtUtil.generateRefreshToken(loginDTO.username());
+            return ResponseEntity.ok().body(Map.of(
+                    "access", accessToken,
+                    "refresh", refreshToken));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+        }
+    }
+
+    @PostMapping("/token/refresh")
+    public ResponseEntity<?> refresh(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+
+        try {
+            String username = JwtUtil.extractClaims(refreshToken).getSubject();
+
+            String newAccessToken = authService.generateToken(username);
+
+            return ResponseEntity.ok().body(Map.of(
+                    "access", newAccessToken,
+                    "refresh", refreshToken));
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid refresh token.");
         }
     }
 

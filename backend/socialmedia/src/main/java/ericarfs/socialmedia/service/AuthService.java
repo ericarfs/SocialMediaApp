@@ -42,4 +42,10 @@ public class AuthService {
 
     }
 
+    public String generateToken(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return JwtUtil.generateToken(authentication.getName(), authentication.getAuthorities().toString());
+
+    }
+
 }
