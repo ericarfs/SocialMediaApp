@@ -1,5 +1,6 @@
 package ericarfs.socialmedia.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +35,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 @Entity
 @Table(name = "answers")
-public class Answer {
+public class Answer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

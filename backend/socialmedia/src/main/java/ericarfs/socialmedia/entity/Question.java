@@ -1,5 +1,6 @@
 package ericarfs.socialmedia.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 @Entity
 @Table(name = "questions")
-public class Question {
+public class Question implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
