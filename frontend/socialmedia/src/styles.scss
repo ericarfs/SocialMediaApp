@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+@use "tailwindcss";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+.btn{
+    width: 100%;
+    min-height: 50px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.7vh 0;
+}
+
+.btn:active {
+    transform: scale(0.95);
+    transition: transform .3s;
+    box-shadow: none;
+}
