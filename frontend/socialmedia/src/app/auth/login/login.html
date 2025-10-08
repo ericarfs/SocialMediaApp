@@ -1,1 +1,29 @@
-<p>login works!</p>
+<app-auth-layout
+    title="Sign in"
+    subtitle="Not a member?"
+    routerRedirect="/register"
+    redirectText="Create a new account!"
+    (submit)="submit()"
+    (navigate)="navigate()"
+    [disableAuthBtn]="!loginForm.valid"
+>
+    <form [formGroup]="loginForm">
+        <app-auth-input
+            formControlName="username"
+            inputName="username"
+            type="text"
+            label="Username"
+            placeholder="username"
+        >
+        </app-auth-input>
+        <app-auth-input
+            formControlName="password"
+            inputName="password"
+            type="password"
+            label="Password"
+            placeholder="password"
+        >
+    </app-auth-input>
+    <span>Forgot password?</span>
+    </form>
+</app-auth-layout>

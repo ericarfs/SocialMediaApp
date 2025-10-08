@@ -1,5 +1,5 @@
-<main class="flex min-h-screen flex-col justify-center items-center p-4">
-  <div class="flex flex-col justify-center items-center w-[95%] max-w-105 self-center gap-8">
+<main class="flex min-h-screen flex-col items-center py-[10vh] bg-neutral-100">
+  <section class="flex flex-col justify-center items-center w-[95%] max-w-[420px] self-center gap-8">
       <div class="flex flex-col gap-2 text-center text-xl">
         <img src="/cards.svg" title="Flash card icons created by manshagraphics - Flaticon"/>
         <h1 class="flex justify-center text-4xl font-semibold p-[3%] text-neutral-500">name</h1>
@@ -7,7 +7,7 @@
       </div>
       <div class="flex flex-wrap justify-center w-full">
         <button
-        class="btn bg-neutral-100 text-rose-400 border border-rose-300"
+        class="btn bg-neutral-50 text-rose-400 border border-rose-300"
         (click) = "goToLogin()"> I already have an account
         </button>
         <button
@@ -15,6 +15,6 @@
         (click) = "goToRegister()">Create an account
         </button>
       </div>
-  </div>
+  </section>
 </main>
 

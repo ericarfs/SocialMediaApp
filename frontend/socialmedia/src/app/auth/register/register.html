@@ -1,1 +1,44 @@
-<p>register works!</p>
+<app-auth-layout
+    title="Sign up"
+    subtitle="Already has an account?"
+    routerRedirect="/login"
+    redirectText="Login!"
+    (submit)="submit()"
+    (navigate)="navigate()"
+    [disableAuthBtn]="!registerForm.valid"
+>
+    <form [formGroup]="registerForm">
+        <app-auth-input
+            formControlName="username"
+            inputName="username"
+            type="text"
+            label="Username"
+            placeholder="username"
+        >
+        </app-auth-input>
+        <app-auth-input
+            formControlName="email"
+            inputName="email"
+            type="email"
+            label="Email"
+            placeholder="email"
+        >
+        </app-auth-input>
+        <app-auth-input
+            formControlName="password"
+            inputName="password"
+            type="password"
+            label="Password"
+            placeholder="password"
+        >
+      </app-auth-input>
+      <app-auth-input
+            formControlName="password"
+            inputName="password"
+            type="password"
+            label="Password Confirmation"
+            placeholder="password confirmation"
+        >
+      </app-auth-input>
+    </form>
+</app-auth-layout>

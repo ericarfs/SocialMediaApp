@@ -1,0 +1,27 @@
+<div class="relative w-full flex mb-5">
+  <input
+    [type]="type"
+    class="peer block px-2.5 pb-2.5 pt-4 w-full text-sm text-rose-950 caret-rose-950 border border-rose-200 bg-neutral-50 appearance-none rounded-lg h-12
+    focus:outline-none focus:ring-0 focus:border-rose-800"
+    placeholder=" "
+    [id]="inputId"
+    [value]="value"
+    (input)="onInput($event)"
+  />
+
+  <label
+    [for]="inputId"
+    class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
+           bg-neutral-50  px-2
+           peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2
+           peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4
+           peer-focus:text-rose-800  start-1
+           peer-focus:bg-gradient-to-t from-neutral-50 to-white"
+  >
+    {{ label }}
+  </label>
+  <div class="icon p-3 bg-white">
+      <ng-content></ng-content>
+    </div>
+</div>
+
