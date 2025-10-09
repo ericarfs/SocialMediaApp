@@ -68,7 +68,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found."));
     }
 
-    public UserResponseDTO create(CreateUserDTO createUserDTO) {
+    public String create(CreateUserDTO createUserDTO) {
         if (userRepository.existsByEmail(new Email(createUserDTO.email()))) {
             throw new DatabaseException("Email already taken.");
         }
@@ -81,7 +81,7 @@ public class UserService {
 
         user = userRepository.save(user);
 
-        return userMapper.toResponseDTO(user);
+        return user.getUsername();
     }
 
     public User createUser(CreateUserDTO createUserDTO) {

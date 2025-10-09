@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import ericarfs.socialmedia.dto.request.user.CreateUserDTO;
 import ericarfs.socialmedia.dto.request.user.LoginDTO;
-import ericarfs.socialmedia.dto.response.user.UserResponseDTO;
 import ericarfs.socialmedia.security.JwtUtil;
 import ericarfs.socialmedia.service.AuthService;
 import ericarfs.socialmedia.service.UserService;
@@ -34,13 +33,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody CreateUserDTO requestDto) {
-        UserResponseDTO response = userService.create(requestDto);
+    public ResponseEntity<Void> register(@Valid @RequestBody CreateUserDTO requestDto) {
+        String response = userService.create(requestDto);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{username}")
-                .buildAndExpand(response.username())
+                .buildAndExpand(response)
                 .toUri())
-                .body(response);
+                .build();
     }
 
     @PostMapping("/token")
