@@ -16,6 +16,7 @@ import ericarfs.socialmedia.entity.enums.Role;
 import ericarfs.socialmedia.entity.util.Email;
 import ericarfs.socialmedia.exceptions.DatabaseException;
 import ericarfs.socialmedia.exceptions.PermissionDeniedException;
+import ericarfs.socialmedia.exceptions.ResourceConflictException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.UserMapper;
 import ericarfs.socialmedia.repository.UserRepository;
@@ -70,11 +71,11 @@ public class UserService {
 
     public String create(CreateUserDTO createUserDTO) {
         if (userRepository.existsByEmail(new Email(createUserDTO.email()))) {
-            throw new DatabaseException("Email already taken.");
+            throw new ResourceConflictException("Email already taken.");
         }
 
         if (userRepository.existsByUsername(createUserDTO.username())) {
-            throw new DatabaseException("Username already taken.");
+            throw new ResourceConflictException("Username already taken.");
         }
 
         User user = createUser(createUserDTO);
@@ -99,7 +100,7 @@ public class UserService {
 
         if (updateUserDTO.username() != null && !user.getUsername().equals(updateUserDTO.username())) {
             if (userRepository.existsByUsername(updateUserDTO.username())) {
-                throw new DatabaseException("Username already taken.");
+                throw new ResourceConflictException("Username already taken.");
             }
             user.setUsername(updateUserDTO.username());
         }

@@ -39,6 +39,17 @@ public class ResourceExceptionHandler {
 		return new ResponseEntity<>(err, status);
 	}
 
+	@ExceptionHandler(ResourceConflictException.class)
+	public ResponseEntity<StandardError> handleResourceConflictException(ResourceConflictException e,
+			HttpServletRequest request) {
+		String error = "Conflit error";
+		HttpStatus status = HttpStatus.CONFLICT;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(),
+				request.getRequestURI());
+
+		return new ResponseEntity<>(err, status);
+	}
+
 	@ExceptionHandler(PermissionDeniedException.class)
 	public ResponseEntity<StandardError> handlePermissionDeniedException(PermissionDeniedException e,
 			HttpServletRequest request) {
