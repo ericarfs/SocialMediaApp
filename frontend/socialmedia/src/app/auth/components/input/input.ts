@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
-import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
-type InputTypes = "text" | "email" | "password"
+type InputTypes = "text" | "email" | "password" | string
 
 @Component({
   selector: 'app-auth-input',
@@ -27,6 +27,8 @@ export class InputComponent implements ControlValueAccessor, OnChanges {
 
   inputId: string = '';
   value: string = ''
+  disabled = false;
+
   onChange: any = () => {}
   onTouched: any = () => {}
 
@@ -37,6 +39,10 @@ export class InputComponent implements ControlValueAccessor, OnChanges {
         '-' +
         Math.random().toString(36).substring(2, 8);
     }
+  }
+
+  onBlur() {
+    this.onTouched();
   }
 
   onInput(event: Event){
@@ -56,5 +62,7 @@ export class InputComponent implements ControlValueAccessor, OnChanges {
     this.onTouched = fn
   }
 
-  setDisabledState(isDisabled: boolean): void {}
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
 }

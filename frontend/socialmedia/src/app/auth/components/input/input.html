@@ -1,7 +1,7 @@
-<div class="relative w-full flex mb-5">
+<div class="relative w-full flex">
   <input
     [type]="type"
-    class="peer block px-2.5 pb-2.5 pt-4 w-full text-sm text-rose-950 caret-rose-950 border border-rose-200 bg-neutral-50 appearance-none rounded-lg h-12
+    class="peer block px-2.5 pb-2.5 pt-4 w-full text-sm text-rose-950 caret-rose-950 border border-neutral-200 bg-neutral-50 appearance-none rounded-lg h-12 font-light
     focus:outline-none focus:ring-0 focus:border-rose-800"
     placeholder=" "
     [id]="inputId"
@@ -11,16 +11,17 @@
 
   <label
     [for]="inputId"
-    class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
+    class="absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] font-light
            bg-neutral-50  px-2
            peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2
            peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4
            peer-focus:text-rose-800  start-1
-           peer-focus:bg-gradient-to-t from-neutral-50 to-white"
+           peer-focus:bg-gradient-to-t peer-focus:from-neutral-50 to-white
+           peer-focus:font-normal"
   >
     {{ label }}
   </label>
-  <div class="icon p-3 bg-white">
+  <div class="flex items-center p-1">
       <ng-content></ng-content>
     </div>
 </div>

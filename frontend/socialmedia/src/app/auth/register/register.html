@@ -7,7 +7,7 @@
     (navigate)="navigate()"
     [disableAuthBtn]="!registerForm.valid"
 >
-    <form [formGroup]="registerForm">
+    <form [formGroup]="registerForm" class="flex flex-col gap-2">
         <app-auth-input
             formControlName="username"
             inputName="username"
@@ -15,7 +15,12 @@
             label="Username"
             placeholder="username"
         >
+        <i class="fa-regular fa-circle-user fa-lg"></i>
         </app-auth-input>
+        <app-form-control-error
+            [control]="registerForm.controls.username"
+            label="Username"
+        />
         <app-auth-input
             formControlName="email"
             inputName="email"
@@ -23,22 +28,52 @@
             label="Email"
             placeholder="email"
         >
+        <i class="fa-regular fa-envelope fa-lg"></i>
         </app-auth-input>
+        <app-form-control-error
+            [control]="registerForm.controls.email"
+            label="Email"
+        />
         <app-auth-input
             formControlName="password"
             inputName="password"
-            type="password"
+            [type]="passwordType"
             label="Password"
             placeholder="password"
         >
+        <div (click)="togglePasswordVisibility()">
+          @if(!showPassword){
+            <i class="fa-regular fa-eye fa-lg" aria-hidden="true"></i>
+          }
+          @else{
+            <i class="fa-regular fa-eye-slash fa-lg" aria-hidden="true"></i>
+          }
+        </div>
       </app-auth-input>
+      <app-form-control-error
+            [control]="registerForm.controls.password"
+            label="Password"
+        />
       <app-auth-input
-            formControlName="password"
+            formControlName="confirmPassword"
             inputName="password"
-            type="password"
+            [type]="confirmPasswordType"
             label="Password Confirmation"
             placeholder="password confirmation"
         >
+        <div (click)="toggleConfirmPasswordVisibility()">
+          @if(!showConfirmPassword){
+            <i class="fa-regular fa-eye fa-lg" aria-hidden="true"></i>
+          }
+          @else{
+            <i class="fa-regular fa-eye-slash fa-lg" aria-hidden="true"></i>
+          }
+        </div>
+
       </app-auth-input>
+       <app-form-control-error
+            [control]="registerForm.controls.confirmPassword"
+            label="Confirmação de Senha"
+        />
     </form>
 </app-auth-layout>

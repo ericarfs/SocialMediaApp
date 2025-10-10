@@ -7,7 +7,7 @@
     (navigate)="navigate()"
     [disableAuthBtn]="!loginForm.valid"
 >
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" class="flex flex-col gap-3">
         <app-auth-input
             formControlName="username"
             inputName="username"
@@ -15,14 +15,23 @@
             label="Username"
             placeholder="username"
         >
+        <i class="fa-solid fa-user fa-lg"></i>
         </app-auth-input>
         <app-auth-input
             formControlName="password"
             inputName="password"
-            type="password"
+            [type]="passwordType"
             label="Password"
             placeholder="password"
         >
+        <div (click)="togglePasswordVisibility()">
+          @if(!showPassword){
+            <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+          }
+          @else{
+            <i class="fa fa-eye-slash fa-lg" aria-hidden="true"></i>
+          }
+        </div>
     </app-auth-input>
     <span>Forgot password?</span>
     </form>

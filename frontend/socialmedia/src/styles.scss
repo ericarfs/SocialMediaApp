@@ -14,7 +14,7 @@ html, body {
     min-height: 50px;
     cursor: pointer;
     border-radius: 8px;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 1rem;
     text-align: center;
     display: flex;
@@ -31,4 +31,22 @@ html, body {
     transform: scale(0.95);
     transition: transform .3s;
     box-shadow: none;
+}
+
+.snackbar-success,
+.snackbar-error{
+  color: white;
+  font-weight: 500;
+
+  .mat-mdc-snack-bar-action{
+    background-color: rgba(white, 0.2);
+  }
+}
+
+.snackbar-success{
+  background-color: #4caf50;
+}
+
+.snackbar-error{
+  background-color: #f44336;
 }
