@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Layout } from '../components/layout/layout';
 import { InputComponent } from '../components/input/input';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface LoginForm {
@@ -18,6 +18,7 @@ interface LoginForm {
     Layout,
     ReactiveFormsModule,
     InputComponent,
+    RouterLink,
 ],
   providers: [
   ],

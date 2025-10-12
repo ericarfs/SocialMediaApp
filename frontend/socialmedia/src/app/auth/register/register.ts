@@ -5,7 +5,7 @@ import { InputComponent } from '../components/input/input';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormControlError } from './form-control-error';
+import { FormControlError } from '../components/form-control-error';
 import { matchPasswordValidator } from './match-password.validator';
 
 interface RegisterForm {
