@@ -1,5 +1,5 @@
 <app-auth-layout
-    title="Sign in"
+    title="Login"
     subtitle="Not a member?"
     routerRedirect="/register"
     redirectText="Create a new account!"
@@ -7,7 +7,7 @@
     (navigate)="navigate()"
     [disableAuthBtn]="!loginForm.valid"
 >
-    <form [formGroup]="loginForm" class="flex flex-col gap-3">
+    <form [formGroup]="loginForm" class="flex flex-col gap-2">
         <app-auth-input
             formControlName="username"
             inputName="username"
@@ -33,6 +33,5 @@
           }
         </div>
     </app-auth-input>
-    <span>Forgot password?</span>
     </form>
 </app-auth-layout>

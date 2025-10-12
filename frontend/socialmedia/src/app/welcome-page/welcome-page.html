@@ -1,13 +1,16 @@
-<main class="flex min-h-screen flex-col items-center py-[10vh] bg-neutral-100">
-  <section class="flex flex-col justify-center items-center w-[95%] max-w-[420px] self-center gap-8">
+<main class="flex min-h-screen flex-col items-center py-[15vh] bg-neutral-100">
+  <section class="flex flex-col justify-center items-center w-[95%] self-center gap-8">
       <div class="flex flex-col gap-2 text-center text-xl">
-        <img src="/cards.svg" title="Flash card icons created by manshagraphics - Flaticon"/>
         <h1 class="flex justify-center text-4xl font-semibold p-[3%] text-neutral-500">name</h1>
-        <span class="text-neutral-500">Subtitle</span>
+        <div class="text-neutral-600 flex flex-col text-base md:text-lg">
+          <span><b class="text-rose-600">Connect</b> with people around the world.</span>
+          <span><b class="text-rose-600">Send</b> and <b class="text-rose-600">Receive</b> anonymous questions.</span>
+          <span>Let your <b class="text-rose-600">curiosity</b> run free!</span>
+        </div>
       </div>
-      <div class="flex flex-wrap justify-center w-full">
+      <div class="flex flex-wrap justify-center w-full max-w-120 gap-2">
         <button
-        class="btn bg-neutral-50 text-rose-400 border border-rose-300"
+        class="btn bg-white text-rose-400 border border-rose-200"
         (click) = "goToLogin()"> I already have an account
         </button>
         <button
