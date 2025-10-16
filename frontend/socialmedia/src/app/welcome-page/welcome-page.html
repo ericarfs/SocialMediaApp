@@ -1,8 +1,8 @@
-<main class="flex min-h-screen flex-col items-center py-[15vh] bg-neutral-100 dark:text-white ">
+<main class="flex min-h-screen flex-col items-center py-[15vh] bg-background">
   <section class="flex flex-col justify-center items-center w-[95%] self-center gap-8">
       <div class="flex flex-col gap-2 text-center text-lg md:text-xl">
-        <h1 class="flex justify-center p-[3%] text-rose-400">maritaQA</h1>
-        <div class="text-neutral-700 flex flex-col dark:text-neutral-100">
+        <h1 class="flex justify-center p-[3%] text-neutral">maritaQA</h1>
+        <div class="text-neutral flex flex-col">
           <span><b class="text-rose-500">Connect</b> with people around the world.</span>
           <span><b class="text-rose-500">Send</b> and <b class="text-rose-500">Receive</b> anonymous questions.</span>
           <span>Let your <b class="text-rose-500">curiosity</b> run free!</span>
@@ -10,14 +10,13 @@
       </div>
       <div class="flex flex-wrap justify-center w-full max-w-120 gap-2">
         <button
-        class="btn text-neutral-500 border border-neutral-200
-        hover:bg-neutral-500/20 hover:border-none
-        transition-all duration-300
-        dark:bg-zinc-700 dark:text-neutral-300 dark:border-zinc-500"
+        class="btn text-neutral border border-border
+        hover:bg-neutral-500/20
+        transition-all duration-300"
         (click) = "goToLogin()"> I already have an account
         </button>
         <button
-        class="btn bg-rose-400 text-white"
+        class="btn bg-primary text-white"
         (click) = "goToRegister()">Create an account
         </button>
       </div>

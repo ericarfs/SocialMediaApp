@@ -2,24 +2,85 @@
 
 * {
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: "Roboto Condensed", sans-serif;
+    font-optical-sizing: auto;
+
+}
+
+:root {
+  --background: var(--color-neutral-100);
+
+  --border: var(--color-neutral-400);
+  --card: var(--color-white);
+
+  --primary: var(--color-rose-400);
+  --primary-details: var(--color-rose-800);
+  --secondary: var(--color-teal-600);
+  --secondary-details: var(--color-teal-600);
+
+  --text-base: var(--color-black);
+  --text-title: var(--color-rose-950);
+  --text-neutral: var(--color-neutral-600);
+
+  --input-bg: var(--color-neutral-50);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-zinc-700);
+
+    --border: var(--color-zinc-400);
+    --card: var(--color-zinc-600);
+
+    --primary: var(--color-rose-400);
+    --primary-details: var(--color-rose-300);
+    --secondary: var(--color-teal-300);
+    --secondary-details: var(--color-teal-300);
+
+    --text-base: var(--color-white);
+    --text-title: var(--color-rose-50);
+    --text-neutral: var(--color-neutral-200);
+    --input-bg: var(--color-zinc-600);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-border: var(--border);
+  --color-card: var(--card);
+
+  --color-primary: var(--primary);
+  --color-primary-details: var(--primary-details);
+  --color-secondary: var(--secondary);
+  --color-secondary-details: var(--secondary-details);
+
+  --color-base: var(--text-base);
+  --color-title: var(--text-title);
+  --color-neutral: var(--text-neutral);
+
+  --color-input: var(--input-bg)
 }
 
 html, body {
     height: 100%;
 }
 
+h1 {
+  font-family: "Fascinate Inline", system-ui;
+  font-size: 3rem;
+}
+
 .btn{
-    width: 100%;
-    min-height: 50px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  min-height: 50px;
+  cursor: pointer;
+  border-radius: 24px;
+  font-weight: 500;
+  font-size: 1.125rem;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .btn:disabled{
