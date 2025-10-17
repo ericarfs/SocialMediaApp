@@ -12,13 +12,13 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
   cache:
     cache-names:
       - rate-limit-auth
-      - rate-limit-data
+      - rate-limit-api
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
 
@@ -32,17 +32,21 @@ bucket4j:
       rate-limits:
         - cache-key: "getRemoteAddr()"
           bandwidths:
-            - capacity: 5
+            - capacity: 10
               time: 1
               unit: minutes
+              refill-speed: interval
 
-    - cache-name: rate-limit-data
+    - cache-name: rate-limit-api
+      filter-method: servlet
+      filter-order: 200
       url: "/api.*"
-      strategy: first
       http-response-body: '{ "status": 429, "error": "Too Many Requests", "message": "API request limit exceeded." }'
       rate-limits:
-        - cache-key: "getRemoteAddr()"
+        - execute-condition: "@securityService.authenticated()"
+          cache-key: "@securityService.getUsername() + ':' + getRequestURI()"
           bandwidths:
-            - capacity: 100
-              time: 1
-              unit: hours
+            - capacity: 200
+              time: 15
+              unit: minutes
+              refill-speed: interval
