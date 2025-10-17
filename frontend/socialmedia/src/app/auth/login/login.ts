@@ -70,8 +70,7 @@ export class Login {
             })
           }
           else{
-            console.log(err)
-            this.snackBar.open(`Failed to login! ${err.status}`,'',{
+            this.snackBar.open('Failed to login!','',{
               duration:3000,
               horizontalPosition: 'center',
               verticalPosition: 'top',
