@@ -57,13 +57,13 @@ public class UserProfileController {
     }
 
     @PostMapping("/blocks/{username}")
-    public ResponseEntity<Void> blockUser(@PathVariable String username) {
+    public ResponseEntity<Void> blockUser(@PathVariable("username") String username) {
         userService.blockUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/blocks/{username}")
-    public ResponseEntity<Void> unblockUser(@PathVariable String username) {
+    public ResponseEntity<Void> unblockUser(@PathVariable("username") String username) {
         userService.unblockUser(username);
         return ResponseEntity.noContent().build();
     }
@@ -75,25 +75,25 @@ public class UserProfileController {
     }
 
     @PostMapping("/silences/{username}")
-    public ResponseEntity<Void> silenceUser(@PathVariable String username) {
+    public ResponseEntity<Void> silenceUser(@PathVariable("username") String username) {
         userService.silenceUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/silences/{username}")
-    public ResponseEntity<Void> unsilenceUser(@PathVariable String username) {
+    public ResponseEntity<Void> unsilenceUser(@PathVariable("username") String username) {
         userService.unsilenceUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/follows/{username}")
-    public ResponseEntity<Void> followUser(@PathVariable String username) {
+    public ResponseEntity<Void> followUser(@PathVariable("username") String username) {
         userService.followUser(username);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/follows/{username}")
-    public ResponseEntity<Map<String, Boolean>> unfollowUser(@PathVariable String username) {
+    public ResponseEntity<Map<String, Boolean>> unfollowUser(@PathVariable("username") String username) {
         userService.unfollowUser(username);
         return ResponseEntity.noContent().build();
     }

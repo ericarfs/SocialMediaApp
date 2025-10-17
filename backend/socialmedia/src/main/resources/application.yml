@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: socialmedia
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/socialmediaapp
+    username: postgres
+    password: postgres
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  cache:
+    cache-names:
+      - rate-limit-auth
+      - rate-limit-data
+    caffeine:
+      spec: maximumSize=100000,expireAfterAccess=3600s
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-auth
+      url: "/auth.*"
+      strategy: first
+      http-response-body: '{ "status": 429, "error": "Too Many Requests", "message": "Too many attempts, please try again later." }'
+      rate-limits:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 5
+              time: 1
+              unit: minutes
+
+    - cache-name: rate-limit-data
+      url: "/api.*"
+      strategy: first
+      http-response-body: '{ "status": 429, "error": "Too Many Requests", "message": "API request limit exceeded." }'
+      rate-limits:
+        - cache-key: "getRemoteAddr()"
+          bandwidths:
+            - capacity: 100
+              time: 1
+              unit: hours

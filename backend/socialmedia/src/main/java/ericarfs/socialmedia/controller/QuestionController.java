@@ -42,27 +42,27 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponseDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<QuestionResponseDTO> findById(@PathVariable("id") Long id) {
         QuestionResponseDTO question = questionService.findByIdAndUser(id);
         return ResponseEntity.ok().body(question);
     }
 
     @PostMapping("/{username}")
-    public ResponseEntity<String> create(@PathVariable String username,
+    public ResponseEntity<String> create(@PathVariable("username") String username,
             @Valid @RequestBody CreateQuestionDTO requestDto) {
         questionService.create(requestDto, username);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/in-response-to/{answerId}")
-    public ResponseEntity<String> create(@PathVariable Long answerId,
+    public ResponseEntity<String> create(@PathVariable("answerId") Long answerId,
             @Valid @RequestBody CreateQuestionDTO requestDto) {
         questionService.create(requestDto, answerId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/answer")
-    public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable Long id,
+    public ResponseEntity<AnswerResponseDTO> createAnswer(@PathVariable("id") Long id,
             @Valid @RequestBody AnswerRequestDTO requestDto) {
         AnswerResponseDTO response = answerService.create(requestDto, id);
         return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest()
@@ -73,7 +73,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         questionService.delete(id);
         return ResponseEntity.noContent().build();
     }
