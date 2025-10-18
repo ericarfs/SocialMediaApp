@@ -10,7 +10,7 @@ import ericarfs.socialmedia.entity.util.Email;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(Email email);
 
     Optional<User> findByUsername(String username);
 

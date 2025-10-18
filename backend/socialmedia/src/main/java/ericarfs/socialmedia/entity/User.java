@@ -20,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -100,6 +101,10 @@ public class User implements Serializable {
     private Instant updatedAt;
 
     private Instant lastLogin;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private ResetToken resetToken;
 
     public int getFollowingCount() {
         return this.getFollowing().size();

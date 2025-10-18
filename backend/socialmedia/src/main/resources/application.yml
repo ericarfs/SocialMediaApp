@@ -22,6 +22,19 @@ spring:
     caffeine:
       spec: maximumSize=100000,expireAfterAccess=3600s
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+
+    properties:
+      mail:
+        smtp:
+          auth: true o
+          starttls:
+            enable: true
+
 bucket4j:
   enabled: true
   filters:

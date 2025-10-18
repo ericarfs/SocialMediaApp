@@ -6,6 +6,7 @@ import { Home } from './home/home';
 import { authGuard, noAuthGuard } from './auth/auth.guard';
 import { Logout } from './auth/logout';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { NewPassword } from './auth/new-password/new-password';
 
 export const routes: Routes = [
   {
@@ -26,6 +27,11 @@ export const routes: Routes = [
   {
     path: "reset-password",
     component: ResetPassword,
+    canActivate: [noAuthGuard]
+  },
+  {
+    path: "reset-password/:token",
+    component: NewPassword,
     canActivate: [noAuthGuard]
   },
   {

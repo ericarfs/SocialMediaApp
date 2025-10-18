@@ -45,6 +45,18 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/auth/register`, { email, username, password });
   }
 
+  resetPassword(token: string, newPassword: string){
+    return this.http.post(`${this.baseUrl}/auth/reset-password/${token}`, { newPassword });
+  }
+
+  generateResetToken(email: string){
+    return this.http.post(`${this.baseUrl}/auth/reset-password`, { email });
+  }
+
+  checkResetToken(token: string){
+    return this.http.get(`${this.baseUrl}/auth/reset-password/${token}`);
+  }
+
   logout(): void {
     sessionStorage.removeItem('accessToken');
     sessionStorage.removeItem('refreshToken');
