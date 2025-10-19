@@ -19,7 +19,7 @@ export class AuthService {
   token: string|null = null;
 
   constructor(private http: HttpClient, private router: Router) {
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = sessionStorage.getItem('currentUser');
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
     }
@@ -35,7 +35,7 @@ export class AuthService {
         tap(res => {
           sessionStorage.setItem('accessToken', res.access);
           sessionStorage.setItem('refreshToken', res.refresh);
-          sessionStorage.setItem('currentUser', username);
+          sessionStorage.setItem('currentUser', JSON.stringify(username));
           this.currentUserSubject.next(username);
         })
       );

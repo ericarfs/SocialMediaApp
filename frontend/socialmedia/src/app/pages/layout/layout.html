@@ -1,0 +1,21 @@
+<main class="flex min-h-screen break-all w-full max-w-[1440px]">
+  <section class="flex flex-col gap-3 items-center w-[13%] md:w-[25%]">
+    <div class="flex items-center justify-center w-full h-12">
+      <a class="text-3xl text-neutral hover:text-secondary transition-all duration-300" routerLink="/">
+        <h1 class="hidden md:block">maritaQA</h1>
+        <h1 class="md:hidden rounded-4xl px-2 py-1">M</h1>
+      </a>
+    </div>
+    <app-navbar></app-navbar>
+  </section>
+
+  <section class="w-[50%] border-x border-border">
+    <ng-content></ng-content>
+
+  </section>
+  <section class="w-[25%]">
+
+  </section>
+</main>
+
+

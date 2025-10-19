@@ -46,7 +46,7 @@ export class ResetPassword {
       .subscribe({
         next: () => {
           this.snackBar.open("If the email is registered, you'll get a reset link.",'',{
-              duration: 1000,
+              duration: 2000,
               horizontalPosition: 'center',
               verticalPosition: 'top',
               panelClass:['snackbar-success']
