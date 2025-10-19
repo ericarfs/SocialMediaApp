@@ -62,7 +62,6 @@ export class AuthService {
     sessionStorage.removeItem('refreshToken');
     sessionStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/']);
   }
 
   refreshToken(): Observable<any> {

@@ -1,3 +1,9 @@
+<div class="flex items-center justify-center w-full h-12">
+  <a class="text-3xl text-neutral hover:text-secondary transition-all duration-300" routerLink="/">
+    <h1 class="hidden md:block">maritaQA</h1>
+    <h1 class="md:hidden rounded-4xl px-2 py-1">M</h1>
+  </a>
+</div>
 <nav>
   <ul class="flex flex-col gap-1
     [&>li]:text-xl
@@ -6,38 +12,45 @@
     [&>li>a]:gap-2 [&>li>a]:p-3
     [&>li>a]:hover:bg-neutral-500/20 [&>li>a]:rounded-4xl [&>li>a]:w-full
     [&>li>a>i]:text-2xl [&>li>a>i]:md:text-xl">
-    <li [ngClass]="{'font-bold': url == '/home'}">
+    <li [ngClass]="{'font-bold text-primary-details': url == '/home'}">
       <a routerLink="/home">
         <i [ngClass]="['fa-house', url == '/home' ? 'fa-solid fa-bounce' : 'fa-regular']"></i>
         <span class="sr-only md:not-sr-only">Home</span>
       </a>
     </li>
 
-    <li [ngClass]="{'font-bold': url == '/notifications'}">
+    <li [ngClass]="{'font-bold text-primary-details': url == '/notifications'}">
       <a routerLink="/notifications">
         <i [ngClass]="['fa-bell', url == '/notifications' ? 'fa-solid fa-shake' : 'fa-regular']"></i>
         <span class="sr-only md:not-sr-only">Notifications</span>
       </a>
     </li>
 
-    <li [ngClass]="{'font-bold': url == '/inbox'}">
+    <li [ngClass]="{'font-bold text-primary-details': url == '/inbox'}">
       <a routerLink="/inbox">
         <i [ngClass]="['fa-envelope', url == '/inbox' ? 'fa-solid  fa-shake' : 'fa-regular']"></i>
         <span class="sr-only md:not-sr-only">Inbox</span>
       </a>
     </li>
 
-    <li [ngClass]="{'font-bold': url == '/profile'}">
+    <li [ngClass]="{'font-bold text-primary-details': url == '/profile'}">
       <a routerLink="/profile">
         <i [ngClass]="['fa-user', url == '/profile' ? 'fa-solid fa-beat' : 'fa-regular']"></i>
         <span class="sr-only md:not-sr-only">Profile</span>
       </a>
     </li>
 
-    <li [ngClass]="{'font-bold': url == '/settings'}">
+    <li [ngClass]="{'font-bold text-primary-details': url == '/settings'}">
       <a routerLink="/settings">
         <i [ngClass]="['fa', url == '/settings' ? 'fa-gears fa-spin' : 'fa-gear']"></i>
         <span class="sr-only md:not-sr-only">Settings</span>
+      </a>
+    </li>
+
+    <li>
+      <a routerLink="/logout">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span class="sr-only md:not-sr-only">Logout</span>
       </a>
     </li>
   </ul>

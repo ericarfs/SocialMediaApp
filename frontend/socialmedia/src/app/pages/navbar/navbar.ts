@@ -12,10 +12,10 @@ import { RouterLink, Router } from '@angular/router';
 export class Navbar {
   url!: string;
   active = false;
+
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.url = this.router.url;
-    console.log(this.url)
   }
 }

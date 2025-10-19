@@ -4,7 +4,7 @@ import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 
 import { authGuard, noAuthGuard } from './auth/auth.guard';
-import { Logout } from './auth/logout';
+import { Logout } from './auth/logout/logout';
 import { ResetPassword } from './auth/reset-password/reset-password';
 import { NewPassword } from './auth/new-password/new-password';
 import { Home } from './pages/home/home';
@@ -66,6 +66,7 @@ export const routes: Routes = [
   },
   {
     path: "logout",
-    component: Logout
+    component: Logout,
+    canActivate: [authGuard]
   }
 ];

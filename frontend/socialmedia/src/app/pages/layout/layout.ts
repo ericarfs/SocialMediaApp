@@ -4,7 +4,7 @@ import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-pages-layout',
-  imports: [Navbar, RouterLink],
+  imports: [Navbar],
   templateUrl: './layout.html',
   styleUrl: './layout.scss'
 })
