@@ -1,11 +1,19 @@
-<div class="flex items-center justify-center w-full h-12">
-  <a class="text-3xl text-neutral hover:text-secondary transition-all duration-300" routerLink="/">
+<div class="flex items-center justify-between w-full h-12 border-b-2 border-border md:border-none px-3">
+  <a class="text-3xl text-neutral hover:text-secondary transition-all duration-300"
+   routerLink="/">
     <h1 class="hidden md:block">maritaQA</h1>
     <h1 class="md:hidden rounded-4xl px-2 py-1">M</h1>
   </a>
+
+  <a class="md:hidden flex items-center text-2xl hover:bg-neutral-500/20 p-2 rounded-4xl"
+  [ngClass]="{'font-bold text-primary-details': url == '/settings'}"
+  routerLink="/settings">
+    <i class="fa fa-gear" [ngClass]="{'fa-spin': url == '/settings'}"></i>
+    <span class="sr-only md:not-sr-only">Settings</span>
+  </a>
 </div>
-<nav>
-  <ul class="flex flex-col gap-1
+<nav class="fixed bottom-0 w-full md:static md:w-auto md:bg-transparent border-t-2 border-border md:border-none z-50">
+  <ul class="flex flex-wrap justify-around md:flex-col md:gap-1 md:p-2 py-2
     [&>li]:text-xl
     [&>li]:md:w-48
     [&>li>a]:flex [&>li>a]:items-center
@@ -40,14 +48,14 @@
       </a>
     </li>
 
-    <li [ngClass]="{'font-bold text-primary-details': url == '/settings'}">
+    <li class="hidden md:block" [ngClass]="{'font-bold text-primary-details': url == '/settings'}">
       <a routerLink="/settings">
-        <i [ngClass]="['fa', url == '/settings' ? 'fa-gears fa-spin' : 'fa-gear']"></i>
+        <i class="fa fa-gear" [ngClass]="{'fa-spin': url == '/settings'}"></i>
         <span class="sr-only md:not-sr-only">Settings</span>
       </a>
     </li>
 
-    <li>
+    <li class="hidden md:block">
       <a routerLink="/logout">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
         <span class="sr-only md:not-sr-only">Logout</span>
