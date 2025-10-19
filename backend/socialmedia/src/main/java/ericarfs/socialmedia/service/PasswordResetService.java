@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import ericarfs.socialmedia.entity.ResetToken;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.entity.util.Email;
-import ericarfs.socialmedia.exceptions.ResourceConflictException;
-import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.repository.ResetTokenRepository;
 import ericarfs.socialmedia.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -49,10 +47,10 @@ public class PasswordResetService {
         User user = userObj.get();
 
         resetTokenRepository.findByUser(user).ifPresent(existing -> {
-            if (!existing.isExpired()) {
-                throw new ResourceConflictException("An active token already exists. Please check your email.");
-            }
-            resetTokenRepository.delete(existing);
+            user.setResetToken(null);
+
+            userRepository.save(user);
+            resetTokenRepository.deleteById(existing.getId());
         });
 
         String token = tokenService.makeResetToken();
@@ -84,8 +82,7 @@ public class PasswordResetService {
     public void resetPassword(String requestToken, String newPassword) {
         ResetToken token = tokenService.find(requestToken);
 
-        User user = userRepository.findById(token.getUser().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found."));
+        User user = token.getUser();
 
         String encryptedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encryptedPassword);

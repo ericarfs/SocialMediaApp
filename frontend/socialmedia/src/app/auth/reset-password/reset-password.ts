@@ -52,23 +52,13 @@ export class ResetPassword {
               panelClass:['snackbar-success']
           })
         },
-        error: (err) => {
-          if(err.status === 409){
-            this.snackBar.open(`${err.error.message}`,'',{
-              duration: 2000,
-              horizontalPosition: 'center',
-              verticalPosition: 'top',
-              panelClass:['snackbar-error']
-            })
-          }
-          else{
-            this.snackBar.open("Failed to send the link.",'',{
-              duration: 2000,
-              horizontalPosition: 'center',
-              verticalPosition: 'top',
-              panelClass:['snackbar-error']
-            })
-          }
+        error: () => {
+          this.snackBar.open("Failed to send the link.",'',{
+            duration: 2000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass:['snackbar-error']
+          })
         }
       })
   }
