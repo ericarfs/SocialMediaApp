@@ -11,11 +11,18 @@ import { RouterLink, Router } from '@angular/router';
 
 export class Navbar {
   url!: string;
+  title!: string;
   active = false;
+  items = ['Home', 'Notifications', 'Inbox', 'Profile', 'Settings']
 
   constructor(private router: Router) {}
 
   ngOnInit() {
     this.url = this.router.url;
+    this.title = this.formatTitle(this.url.split('/')[1]);
+  }
+
+  formatTitle(url:string){
+    return url[0].toUpperCase() + url.slice(1);
   }
 }
