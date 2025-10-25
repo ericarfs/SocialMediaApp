@@ -18,45 +18,53 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
         List<Answer> findByAuthor(User author);
 
-        @Query(value = "\n" + //
-                        "SELECT \n" + //
-                        "  a.id, \n" + //
-                        "  a.question_id,\n" + //
-                        "  a.author_id, \n" + //
-                        "  a.body, \n" + //
-                        "  a.updated_at, \n" + //
-                        "  CASE WHEN a.author_id=:userId THEN a.created_at \n" + //
-                        "  ELSE s.share_date END AS created_at \n" + //
-                        "FROM answers AS a \n" + //
-                        "LEFT JOIN answers_shares AS s ON a.id= s.answer_id AND s.user_id=:userId \n" + //
-                        "WHERE a.author_id=:userId OR s.user_id=:userId \n" + //
-                        "ORDER BY created_at DESC", nativeQuery = true)
+        @Query(value = """
+                        SELECT
+                          a.id,
+                          a.question_id,
+                          a.author_id,
+                          a.body,
+                          a.updated_at,
+                          CASE WHEN a.author_id=:userId THEN a.created_at
+                          ELSE s.share_date END AS created_at
+                        FROM answers AS a
+                        LEFT JOIN answers_shares AS s ON a.id= s.answer_id AND s.user_id=:userId
+                        WHERE a.author_id=:userId OR s.user_id=:userId
+                        ORDER BY created_at DESC
+                        """, nativeQuery = true)
         Page<Answer> findAuthoredAndSharedAnswers(Long userId, Pageable pageable);
 
-        @Query(value = "\n" + //
-                        "WITH following AS (\n" + //
-                        "  SELECT following_id\n" + //
-                        "  FROM users_following\n" + //
-                        "  WHERE followers_id = :userId\n" + //
-                        ")\n" + //
-                        "SELECT\n" + //
-                        "  a.id,\n" + //
-                        "  a.question_id,\n" + //
-                        "  a.author_id,\n" + //
-                        "  a.body,\n" + //
-                        "  a.updated_at,\n" + //
-                        "  CASE\n" + //
-                        "    WHEN a.author_id IN (SELECT following_id FROM Following) THEN a.created_at\n" + //
-                        "    ELSE s.share_date\n" + //
-                        "  END AS created_at\n" + //
-                        "FROM\n" + //
-                        "  answers AS a\n" + //
-                        "  LEFT JOIN answers_shares AS s\n" + //
-                        "    ON a.id = s.answer_id AND s.user_id IN (SELECT following_id FROM following)\n" + //
-                        "WHERE\n" + //
-                        "  a.author_id IN (SELECT following_id FROM following)\n" + //
-                        "  OR s.user_id IN (SELECT following_id FROM following)\n" + //
-                        "ORDER BY created_at DESC;", nativeQuery = true)
+        @Query(value = """
+                        WITH following AS (
+                          SELECT following_id
+                          FROM users_following
+                          WHERE followers_id = :userId
+                        )
+                        SELECT
+                          a.id,
+                          a.question_id,
+                          a.author_id,
+                          a.body,
+                          a.updated_at,
+                          CASE
+                            WHEN a.author_id IN (SELECT following_id FROM following) THEN a.created_at
+                            ELSE s.share_date
+                          END AS created_at
+                        FROM
+                          answers AS a
+                          LEFT JOIN answers_shares AS s
+                            ON a.id = s.answer_id AND s.user_id IN (SELECT following_id FROM following)
+                        WHERE
+                          a.author_id IN (SELECT following_id FROM following)
+                          OR s.user_id IN (SELECT following_id FROM following)
+                        ORDER BY created_at DESC
+                        """, countQuery = """
+                        SELECT COUNT(*)
+                        FROM answers AS a
+                        WHERE a.author_id IN (
+                          SELECT following_id FROM users_following WHERE followers_id = :userId
+                        )
+                        """, nativeQuery = true)
         Page<Answer> findFollowersActivities(Long userId, Pageable pageable);
 
         boolean existsByIdAndAuthor(Long id, User author);
