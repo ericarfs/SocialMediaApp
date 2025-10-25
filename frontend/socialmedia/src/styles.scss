@@ -2,9 +2,7 @@
 
 * {
     box-sizing: border-box;
-    font-family: "Roboto Condensed", sans-serif;
     font-optical-sizing: auto;
-
 }
 
 :root {
@@ -54,7 +52,7 @@
   --color-secondary: var(--secondary);
   --color-secondary-details: var(--secondary-details);
 
-  --color-base: var(--text-base);
+  --color-init: var(--text-base);
   --color-title: var(--text-title);
   --color-neutral: var(--text-neutral);
 
@@ -72,6 +70,14 @@ body{
 
 h1 {
   font-family: "Fascinate Inline", system-ui;
+}
+
+main {
+  font-family: "Merriwheater Sans", sans-serif;
+}
+
+nav {
+  font-family: "Roboto Condensed", sans-serif;
 }
 
 .btn{
