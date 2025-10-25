@@ -3,6 +3,7 @@ package ericarfs.socialmedia.service;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -46,10 +47,11 @@ public class QuestionService {
         return questionMapper.listEntityToListDTO(questionRepository.findAll());
     }
 
-    public List<QuestionResponseDTO> findAllByUser(Pageable pageable) {
-        return questionMapper.listEntityToListDTO(
-                questionRepository.findBySentToAndIsAnsweredFalse(
-                        authService.getAuthenticatedUser(), pageable));
+    public Page<QuestionResponseDTO> findAllByUser(Pageable pageable) {
+        User user = authService.getAuthenticatedUser();
+
+        return questionRepository.findBySentToAndIsAnsweredFalse(user, pageable)
+                .map(questionMapper::toResponseDTO);
     }
 
     public QuestionResponseDTO findById(Long id) {

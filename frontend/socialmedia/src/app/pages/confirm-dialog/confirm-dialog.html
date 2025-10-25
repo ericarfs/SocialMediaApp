@@ -1,0 +1,23 @@
+<div class="bg-background w-full border-2 border-neutral rounded-sm py-2 px-1">
+  <mat-dialog-content class="bg-background">
+    <h2 class="text-2xl font-semibold text-init">
+      {{ data.title || 'Are you sure?' }}
+    </h2>
+    <span class="text-sm text-neutral">
+      {{ data.subtitle || '' }}
+    </span>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <div class="flex flex-col w-full gap-2 pt-5 border-t border-solid border-primary-details">
+      <button class="btn bg-primary text-white" (click)="onConfirm()">
+        {{ data.cancelText || 'Confirm' }}
+      </button>
+      <button class="btn text-neutral border-2 border-border
+          hover:bg-neutral-500/20
+          transition-all duration-300" (click)="onCancel()">
+          {{ data.cancelText || 'Cancel' }}
+        </button>
+    </div>
+  </mat-dialog-actions>
+</div>
+

@@ -1,3 +1,31 @@
 <app-pages-layout>
-<p>inbox works!</p>
+  <div class="mt-1 flex flex-col items-center gap-1 w-2xl max-w-full mx-auto break-normal">
+    @if(isSelected && currentQuestion){
+      <app-question
+        [question] = "currentQuestion"
+        (cancelReplyClicked)="cleanReply()"
+        (sendReplyClicked)="sendAnswer($event,currentQuestion.id)"
+        [isSelected] = "isSelected"
+        [isReplying] = "isReplying">
+      </app-question>
+    }
+    @else {
+      @for (question of questions(); track question.id) {
+        <app-question
+        [question] = "question"
+        (deleteClicked)="deleteQuestion(question.id)"
+        (replyClicked)="answerQuestion(question.id)"
+        [isDeleting] = "isDeleting"
+        [isSelected] = "isSelected">
+      </app-question>
+      }
+      @if (loading()) {
+        <div class="text-center py-10 text-secondary text-5xl animate-pulse">
+          <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+        </div>
+      }
+
+      <div #scrollAnchor class="h-12"></div>
+    }
+  </div>
 </app-pages-layout>

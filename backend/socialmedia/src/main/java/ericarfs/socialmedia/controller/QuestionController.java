@@ -1,8 +1,8 @@
 package ericarfs.socialmedia.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,9 +36,11 @@ public class QuestionController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<QuestionResponseDTO>> findAll(Pageable pageable) {
-        List<QuestionResponseDTO> list = questionService.findAllByUser(pageable);
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<PagedModel<QuestionResponseDTO>> findAll(Pageable pageable) {
+        Page<QuestionResponseDTO> questions = questionService.findAllByUser(pageable);
+
+        PagedModel<QuestionResponseDTO> pagedQuestions = new PagedModel<>(questions);
+        return ResponseEntity.ok().body(pagedQuestions);
     }
 
     @GetMapping("/{id}")

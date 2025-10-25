@@ -1,0 +1,100 @@
+<div class="w-full bg-card border-2 border-border rounded-sm py-3 px-2 space-y-3">
+  <div class="flex items-center gap-3 px-1">
+        <img
+          src="/avatar.png"
+          alt="Avatar"
+          class="w-10 h-10 rounded-sm object-cover bg-secondary"
+        />
+        <div class="flex flex-col flex-wrap">
+          <div class="flex items-center flex-wrap space-x-1">
+            @if(question()?.sentBy === 'Anonymous'){
+              <span class="font-semibold text-sm">{{ question()?.sentBy }}</span>
+            }
+            @else {
+              <a [routerLink]="['/profile', question()?.sentBy]"
+                class="font-semibold text-sm hover:underline">{{ question()?.sentBy }}</a>
+            }
+            <span class="text-neutral text-xs">@{{ question()?.sentBy?.toLowerCase() }}</span>
+          </div>
+          <a class="text-xs text-border">{{ question()?.timeCreation }}</a>
+        </div>
+      </div>
+
+    <div class="px-1 text-init text-sm leading-4">
+        {{ question()?.body }}
+      </div>
+
+      @if(isSelected()){
+        <form [formGroup]="form">
+          <textarea class="leading-tight bg-background text-sm break-all h-80 p-2 border border-border w-full rounded-sm resize-none focus:border-2 focus:border-primary-details focus:outline-none"
+          name="reply"
+          formControlName="body"
+          id="reply"
+          [attr.maxlength]="MAX_LENGTH"
+          required
+          >
+          </textarea>
+          <div class="flex justify-center p-1 w-22 rounded-md text-xs text-white font-semibold"
+          [ngClass]="[getNumberOfCharacters() >= MIN_LENGTH && getNumberOfCharacters() < MAX_LENGTH ? 'bg-green-600' : 'bg-red-600']">
+		      {{getNumberOfCharacters()}} / {{MAX_LENGTH}}
+	        </div>
+        </form>
+      }
+
+
+
+      <div class="flex flex-wrap justify-between w-full border-t-2 border-border pt-2 px-2
+      [&>div]:basis-1/2">
+        @if(isSelected()){
+        <div class="flex justify-start text-neutral">
+
+          <button class="flex items-center text-xs gap-1 hover:text-secondary transition cursor-pointer"
+                  (click)="onCancelReplyClick()">
+            <i class="fa-solid fa-xmark text-sm"></i>
+            Cancel
+          </button>
+
+        </div >
+        <div class="flex justify-end text-neutral text-sm">
+
+          <button class="bg-primary text-white font-semibold rounded-md py-1 px-4 flex items-center transition cursor-pointer duration-300
+          disabled:text-card disabled:bg-primary/35
+          active:scale-85 "
+          [disabled] = "!form.valid"
+                  (click)="onSendReplyClick()">
+            @if(isReplying()){
+              <span class="fa-fade">Sending...</span>
+            }
+            @else {
+              <span>Send</span>
+            }
+          </button>
+
+        </div >
+        }
+        @else {
+        <div class="flex justify-start text-neutral text-sm gap-2">
+
+          <button class="flex items-center gap-1 hover:text-secondary transition cursor-pointer"
+                  (click)="onReplyClick()">
+            <i class="fa-solid fa-reply"></i>
+            Reply
+          </button>
+
+        </div >
+
+         <div class="flex justify-end text-neutral text-sm gap-2">
+            <button class="flex items-center gap-1 hover:text-red-600 transition cursor-pointer"
+                    (click)="onDeleteClick()">
+              @if(isDeleting()){
+                <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+              }
+              @else {
+                <i class="fa-solid fa-trash"></i>
+              }
+
+            </button>
+        </div>
+      }
+  </div>
+</div>
