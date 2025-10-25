@@ -12,7 +12,7 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<String | null>(null);
+  private currentUserSubject = new BehaviorSubject<string | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   private baseUrl = "http://localhost:8080";
