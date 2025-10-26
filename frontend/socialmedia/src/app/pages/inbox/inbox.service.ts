@@ -67,6 +67,10 @@ export class InboxService {
   }
 
   sendAnswer(body: string, id: number) {
-    return this.http.post(`${this.baseUrl}/${id}/answer`, { body });
+    return this.http.post(`${this.baseUrl}/${id}/answer`, { body }).pipe(
+      tap(() => {
+        this.questions.update(current => current.filter(q => q.id !== id));
+      })
+    );
   }
 }

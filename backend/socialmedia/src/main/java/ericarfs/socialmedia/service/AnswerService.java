@@ -20,6 +20,7 @@ import ericarfs.socialmedia.entity.Share;
 import ericarfs.socialmedia.entity.User;
 import ericarfs.socialmedia.exceptions.DatabaseException;
 import ericarfs.socialmedia.exceptions.PermissionDeniedException;
+import ericarfs.socialmedia.exceptions.ResourceConflictException;
 import ericarfs.socialmedia.exceptions.ResourceNotFoundException;
 import ericarfs.socialmedia.mapper.AnswerMapper;
 import ericarfs.socialmedia.mapper.UserMapper;
@@ -109,8 +110,8 @@ public class AnswerService {
             throw new PermissionDeniedException("Invalid operation.");
         }
 
-        if (answerRepository.existsByIdAndAuthor(questionId, author)) {
-            throw new DatabaseException("Duplicated answer.");
+        if (answerRepository.existsByQuestionAndAuthor(question, author)) {
+            throw new ResourceConflictException("Duplicated answer.");
         }
 
         question.setAnswered(true);
