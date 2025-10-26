@@ -7,6 +7,7 @@
 
 :root {
   --background: var(--color-neutral-100);
+  --backdrop: rgba(255, 255, 255,0.8);
 
   --border: var(--color-neutral-400);
   --card: var(--color-white);
@@ -26,6 +27,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: var(--color-zinc-700);
+    --backdrop: rgba(0, 0, 0,0.8);
 
     --border: var(--color-zinc-400);
     --card: var(--color-zinc-600);
@@ -123,4 +125,8 @@ nav {
 
 .mat-mdc-dialog-container {
   font-family: "Roboto Condensed", sans-serif;
+}
+
+.darker-backdrop {
+  background-color: var(--backdrop);
 }

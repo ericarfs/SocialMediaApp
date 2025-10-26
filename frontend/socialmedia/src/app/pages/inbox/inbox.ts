@@ -102,7 +102,8 @@ export class Inbox implements OnInit, AfterViewInit {
       position:{
         top: '10vh'
       },
-      data: { title: 'Are you sure you want to delete this question?' }
+      data: { title: 'Are you sure you want to delete this question?' },
+      backdropClass: 'darker-backdrop'
     });
 
     dialogRef.afterClosed().subscribe(result => {
