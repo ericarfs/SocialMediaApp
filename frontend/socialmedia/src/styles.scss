@@ -33,7 +33,7 @@
     --card: var(--color-zinc-600);
 
     --primary: var(--color-rose-400);
-    --primary-details: var(--color-rose-300);
+    --primary-details: var(--color-rose-200);
     --secondary: var(--color-teal-300);
     --secondary-details: var(--color-teal-300);
 
@@ -87,8 +87,8 @@ nav {
   min-height: 50px;
   cursor: pointer;
   border-radius: 8px;
-  font-weight: 500;
-  font-size: 1.125rem;
+  font-weight: 600;
+  font-size: 1rem;
   text-align: center;
   display: flex;
   justify-content: center;
