@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,6 +17,7 @@ import ericarfs.socialmedia.security.JwtUtil;
 import ericarfs.socialmedia.service.AuthService;
 import ericarfs.socialmedia.service.PasswordResetService;
 import ericarfs.socialmedia.service.TokenService;
+import ericarfs.socialmedia.service.UserDetailsServiceImpl;
 import ericarfs.socialmedia.service.UserService;
 import jakarta.validation.Valid;
 
@@ -30,15 +32,18 @@ public class AuthController {
 
   private final TokenService tokenService;
   public final UserService userService;
+  public final UserDetailsServiceImpl userDetailsService;
   public final AuthService authService;
   public final PasswordResetService passwordResetService;
 
   public AuthController(
       UserService userService,
+      UserDetailsServiceImpl userDetailsService,
       AuthService authService,
       PasswordResetService emailService,
       PasswordResetService passwordResetService, TokenService tokenService) {
     this.userService = userService;
+    this.userDetailsService = userDetailsService;
     this.authService = authService;
     this.passwordResetService = passwordResetService;
     this.tokenService = tokenService;
@@ -75,7 +80,9 @@ public class AuthController {
     try {
       String username = JwtUtil.extractClaims(refreshToken).getSubject();
 
-      String newAccessToken = authService.generateToken(username);
+      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+      String newAccessToken = authService.generateToken(userDetails);
 
       return ResponseEntity.ok().body(Map.of(
           "access", newAccessToken,

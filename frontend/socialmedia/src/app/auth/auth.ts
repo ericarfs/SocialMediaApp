@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, tap, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap, catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface User {
@@ -19,7 +19,7 @@ export class AuthService {
   token: string|null = null;
 
   constructor(private http: HttpClient, private router: Router) {
-    const storedUser = sessionStorage.getItem('currentUser');
+    const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser));
     }
@@ -33,9 +33,9 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/auth/token`, { username, password })
       .pipe(
         tap(res => {
-          sessionStorage.setItem('accessToken', res.access);
-          sessionStorage.setItem('refreshToken', res.refresh);
-          sessionStorage.setItem('currentUser', JSON.stringify(username));
+          localStorage.setItem('accessToken', res.access);
+          localStorage.setItem('refreshToken', res.refresh);
+          localStorage.setItem('currentUser', JSON.stringify(username));
           this.currentUserSubject.next(username);
         })
       );
@@ -58,19 +58,26 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('currentUser');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
   }
 
   refreshToken(): Observable<any> {
+    localStorage.removeItem('accessToken');
     const token = localStorage.getItem('refreshToken');
-    if (!token) return of(null);
-    return this.http.post<any>(`${this.baseUrl}/auth/refresh-token`, { refreshToken: token })
+    if (!token) {
+      this.logout();
+      return throwError(() => new Error('No refresh token.'));
+    }
+    return this.http.post<any>(`${this.baseUrl}/auth/token/refresh`, { refreshToken: token })
       .pipe(
-        tap(res => localStorage.setItem('accessToken', res.accessToken)),
-        catchError(err => { this.logout(); return of(null); })
+        tap(res => localStorage.setItem('accessToken', res.access)),
+        catchError(err => {
+          this.logout();
+          return throwError(() => err);
+        })
       );
   }
 
@@ -84,7 +91,7 @@ export class AuthService {
   }
 
   loadToken(){
-    const token = sessionStorage.getItem('accessToken');
+    const token = localStorage.getItem('accessToken');
     if(token) this.token = token;
     return this.token;
   }
