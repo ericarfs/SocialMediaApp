@@ -1,6 +1,8 @@
+import { UserBasic } from "./user-response";
+
 export type QuestionResponse = {
   id: number;
-  sentBy: string;
+  sentBy: UserBasic;
   body: string;
   timeCreation: string;
 }

@@ -33,7 +33,7 @@ export class Post implements OnInit {
   }
 
   authorIsCurrentUser(): boolean{
-    return this.answer()?.author === this.currentUser;
+    return this.answer()?.author.username === this.currentUser;
   }
 
   toggleLike() {

@@ -7,14 +7,14 @@
         />
         <div class="flex flex-col flex-wrap">
           <div class="flex items-center flex-wrap space-x-1">
-            @if(question()?.sentBy === 'Anonymous'){
-              <span class="font-semibold text-sm">{{ question()?.sentBy }}</span>
+            @if(question()?.sentBy?.displayName === 'Anonymous'){
+              <span class="font-semibold text-sm">{{ question()?.sentBy?.displayName }}</span>
             }
             @else {
-              <a [routerLink]="['/profile', question()?.sentBy]"
-                class="font-semibold text-sm hover:underline">{{ question()?.sentBy }}</a>
+              <a [routerLink]="['/profile', question()?.sentBy?.username]"
+                class="font-semibold text-sm hover:underline">{{ question()?.sentBy?.displayName }}</a>
             }
-            <span class="text-neutral text-xs">@{{ question()?.sentBy?.toLowerCase() }}</span>
+            <span class="text-neutral text-xs">@{{ question()?.sentBy?.username }}</span>
           </div>
           <a class="text-xs text-border">{{ question()?.timeCreation }}</a>
         </div>

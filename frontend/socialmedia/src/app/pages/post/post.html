@@ -3,10 +3,17 @@
         <div class="text-init font-bold leading-4">
           {{ answer()?.question?.body }}
         </div>
-        <a [routerLink]="['/profile', answer()?.question?.sentBy]"
-         class="text-primary-details hover:underline">
-            <i class="fa-solid fa-user text-xs"></i> {{ answer()?.question?.sentBy }}
-        </a>
+        <div class="flex items-center flex-wrap space-x-1 text-primary-details">
+          <i class="fa-solid fa-user text-xs"></i>
+            @if(answer()?.question?.sentBy?.displayName === 'Anonymous'){
+              <span class="font-semibold text-sm">{{ answer()?.question?.sentBy?.displayName }}</span>
+            }
+            @else {
+              <a [routerLink]="['/profile', answer()?.question?.sentBy?.username]"
+                class="font-semibold text-sm hover:underline">{{ answer()?.question?.sentBy?.displayName }}</a>
+            }
+            <span class="text-primary-details/80 text-xs">@{{ answer()?.question?.sentBy?.username }}</span>
+          </div>
       </div>
 
       <div class="px-1 text-init text-sm leading-4">
@@ -21,9 +28,9 @@
         />
         <div class="flex flex-col flex-wrap">
           <div class="flex items-center flex-wrap space-x-1">
-            <a [routerLink]="['/profile', answer()?.author]"
-            class="font-semibold text-sm hover:underline">{{ answer()?.author }}</a>
-            <span class="text-neutral text-xs">@{{ answer()?.author?.toLowerCase() }}</span>
+            <a [routerLink]="['/profile', answer()?.author?.username]"
+            class="font-semibold text-sm hover:underline">{{ answer()?.author?.displayName }}</a>
+            <span class="text-neutral text-xs">@{{ answer()?.author?.username }}</span>
           </div>
           <a class="text-xs text-border hover:underline">{{ answer()?.timeCreation }}</a>
         </div>

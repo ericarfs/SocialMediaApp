@@ -12,7 +12,7 @@ import ericarfs.socialmedia.dto.response.answer.LikeResponseDTO;
 import ericarfs.socialmedia.dto.response.answer.ShareResponseDTO;
 import ericarfs.socialmedia.entity.Answer;
 
-@Mapper(componentModel = "spring", uses = MapperHelper.class)
+@Mapper(componentModel = "spring", uses = { MapperHelper.class, QuestionMapper.class })
 public interface AnswerMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "likes", ignore = true)
@@ -30,16 +30,16 @@ public interface AnswerMapper {
     @Mapping(target = "hasUserShared", source = "answer", qualifiedByName = "hasUserShared")
     ShareResponseDTO toShareResponseDTO(Answer answer);
 
-    @Mapping(target = "question.timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
+    @Mapping(target = "question", source = "answer.question")
     @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(answer.getCreatedAt()))")
     @Mapping(target = "likesInfo", source = "answer")
     @Mapping(target = "sharesInfo", source = "answer")
-    @Mapping(target = "inResponseTo", source = "question.inResponseToAnswer")
+    @Mapping(target = "inResponseTo", source = "answer.question.inResponseToAnswer")
     AnswerResponseDTO toResponseDTO(Answer answer);
 
-    @Mapping(target = "question.timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
+    @Mapping(target = "question", source = "answer.question")
     @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(answer.getCreatedAt()))")
-    @Mapping(target = "inResponseTo", source = "question.inResponseToAnswer")
+    @Mapping(target = "inResponseTo", source = "answer.question.inResponseToAnswer")
     AnswerBasicDTO toBasicDTO(Answer answer);
 
     List<AnswerResponseDTO> listEntityToListDTO(Iterable<Answer> answers);

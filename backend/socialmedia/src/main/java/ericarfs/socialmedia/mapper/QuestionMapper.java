@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import ericarfs.socialmedia.dto.request.question.CreateQuestionDTO;
 import ericarfs.socialmedia.dto.response.question.QuestionResponseDTO;
+import ericarfs.socialmedia.dto.response.user.UserBasicDTO;
 import ericarfs.socialmedia.entity.Question;
+import ericarfs.socialmedia.entity.User;
 
 @Mapper(componentModel = "spring", uses = MapperHelper.class)
 public interface QuestionMapper {
@@ -21,14 +24,18 @@ public interface QuestionMapper {
 
     List<QuestionResponseDTO> listEntityToListDTO(Iterable<Question> question);
 
-    @Mapping(target = "sentBy", expression = "java(getSentByUser(question))")
+    @Mapping(target = "sentBy", source = "question", qualifiedByName = "getSentByUser")
     @Mapping(target = "timeCreation", expression = "java(ericarfs.socialmedia.utils.TimeUtils.getFormattedCreationDate(question.getCreatedAt()))")
     QuestionResponseDTO toResponseDTO(Question question);
 
-    default String getSentByUser(Question question) {
+    @Named("getSentByUser")
+    default UserBasicDTO getSentByUser(Question question) {
         if (question.isAnon()) {
-            return "Anonymous";
+            return new UserBasicDTO(null, "Anonymous", "anon");
         }
-        return question.getSentBy().getUsername();
+        return new UserBasicDTO(
+                question.getSentBy().getId(),
+                question.getSentBy().getDisplayName(),
+                question.getSentBy().getUsername());
     }
 }

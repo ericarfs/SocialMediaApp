@@ -1,4 +1,5 @@
 import { QuestionResponse } from "./question-response";
+import { UserBasic } from "./user-response";
 
 export type LikeResponse = {
   likesCount: number;
@@ -14,7 +15,7 @@ export type AnswerBasic = {
   id: number;
   question: QuestionResponse;
   body: string;
-  author: string;
+  author: UserBasic;
   timeCreation: string;
   inResponseTo: AnswerBasic | null;
 }
@@ -23,7 +24,7 @@ export type AnswerResponse = {
   id: number;
   question: QuestionResponse;
   body: string;
-  author: string;
+  author: UserBasic;
   timeCreation: string;
   likesInfo: LikeResponse;
   sharesInfo: ShareResponse;
