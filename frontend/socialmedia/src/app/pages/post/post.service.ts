@@ -24,6 +24,18 @@ export class PostService {
   }
 
   toggleShare(id: number) {
-    return this.http.patch<ShareResponse>(`${this.baseUrl}/${id}/shares`,{});
+    return this.http.patch<ShareResponse>(`${this.baseUrl}/answers/${id}/shares`,{});
+  }
+
+  sendQuestion(id: number, body:string, anon: boolean){
+    return this.http.post(`${this.baseUrl}/questions/in-response-to/${id}`, { body, anon });
+  }
+
+  update(id: number, body:string){
+    return this.http.patch(`${this.baseUrl}/answers/${id}`, { body });
+  }
+
+  delete(id: number){
+    return this.http.delete(`${this.baseUrl}/answers/${id}`);
   }
 }

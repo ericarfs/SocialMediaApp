@@ -1,77 +1,205 @@
-<div class="w-full bg-card border-2 border-border rounded-sm py-3 px-2 space-y-3">
-      <div class="text-sm w-full px-1 pb-1 space-y-2 border-b-2 border-border">
-        <div class="text-init font-bold leading-4">
-          {{ answer()?.question?.body }}
+<div class="w-full bg-card border-2 border-border rounded-sm py-3 px-2 space-y-3 break-all">
+  <div class="text-sm w-full px-1 pb-2 space-y-2 border-b-2 border-border">
+    @if(relatedAnswers.length > 0){
+      @if(isSelectedThread()){
+        <div class="flex justify-end cursor-pointer"
+              (click) = "onCancelClick()"
+              aria-label="Close">
+          <i class="fa-solid fa-xmark text-lg
+                    hover:text-primary
+                    active:scale-85
+                    transition duration-300"></i>
         </div>
-        <div class="flex items-center flex-wrap space-x-1 text-primary-details">
-          <i class="fa-solid fa-user text-xs"></i>
-            @if(answer()?.question?.sentBy?.displayName === 'Anonymous'){
-              <span class="font-semibold text-sm">{{ answer()?.question?.sentBy?.displayName }}</span>
-            }
-            @else {
-              <a [routerLink]="['/profile', answer()?.question?.sentBy?.username]"
-                class="font-semibold text-sm hover:underline">{{ answer()?.question?.sentBy?.displayName }}</a>
-            }
-            <span class="text-primary-details/80 text-xs">@{{ answer()?.question?.sentBy?.username }}</span>
+        @for(answer of relatedAnswers; track answer.id){
+          <div class="space-y-2 border-b-2 border-border mb-3">
+            <div class="text-init font-bold leading-4">
+              {{ answer.question.body }}
+            </div>
+            <div class="flex items-center flex-wrap space-x-1 text-primary-details">
+              <i class="fa-solid fa-user text-xs"></i>
+              @if(answer.question.sentBy.displayName === 'Anonymous'){
+                <span class="font-semibold text-sm">{{ answer.question.sentBy.displayName }}</span>
+              }
+              @else {
+                <a [routerLink]="['/profile', answer.question.sentBy.username]"
+                  class="font-semibold text-sm hover:underline">{{ answer.question.sentBy.displayName }}</a>
+                <span class="text-primary-details/80 text-xs">@{{ answer.question.sentBy.username }}</span>
+              }
+            </div>
+            <div class="text-init text-sm leading-4 mb-2">
+              <div class="ml-1 px-2 border-l-2 border-border">
+                {{ answer.body }}
+              </div>
+            </div>
           </div>
-      </div>
+        }
+      } @else{
+        <div class="flex items-center bg-secondary/10 rounded-sm cursor-pointer p-1 space-x-1 h-7
+                    hover:bg-secondary/20
+                    transition-all duration-300"
+              (click)="showRelatedAnswers()">
+        <i class="fa-solid fa-arrow-turn-down fa-flip-horizontal"></i>
+        <span class="truncate">{{relatedAnswers[relatedAnswers.length - 1].body}}</span>
+        </div>
+      }
+    }
+    <div class="text-init font-bold leading-4">
+      {{ answer()?.question?.body }}
+    </div>
+    <div class="flex items-center flex-wrap space-x-1 text-primary-details">
+      <i class="fa-solid fa-user text-xs"></i>
+      @if(answer()?.question?.sentBy?.displayName === 'Anonymous'){
+        <span class="font-semibold text-sm">{{ answer()?.question?.sentBy?.displayName }}</span>
+      }
+      @else {
+        <a [routerLink]="['/profile', answer()?.question?.sentBy?.username]"
+          class="font-semibold text-sm hover:underline">{{ answer()?.question?.sentBy?.displayName }}</a>
+        <span class="text-primary-details/80 text-xs">@{{ answer()?.question?.sentBy?.username }}</span>
+      }
+    </div>
+  </div>
 
-      <div class="px-1 text-init text-sm leading-4">
+  <div class="text-init text-sm leading-4">
+    @if(isSelectedEdit()){
+      <form [formGroup]="replyForm" id="reply">
+        <textarea class="leading-tight bg-background text-sm break-all h-80 p-2 border border-border w-full rounded-sm resize-none focus:border-2 focus:border-primary-details focus:outline-none"
+          name="reply"
+          formControlName="body"
+          id="reply"
+          [attr.maxlength]="MAX_LENGTH_ANSWER"
+          required
+          >
+        </textarea>
+        <div class="flex justify-center p-1 w-22 rounded-md text-xs text-white font-semibold"
+          [ngClass]="[getNumberOfCharactersAnswer() >= MIN_LENGTH_ANSWER && getNumberOfCharactersAnswer() < MAX_LENGTH_ANSWER ? 'bg-green-600' : 'bg-red-600']">
+		      {{getNumberOfCharactersAnswer()}} / {{MAX_LENGTH_ANSWER}}
+	      </div>
+      </form>
+    }
+    @else {
+      <div class="ml-1 px-2 border-l-2 border-border">
         {{ answer()?.body }}
       </div>
+    }
+  </div>
 
-      <div class="flex items-center gap-3 px-1">
-        <img
-          src="/avatar.png"
-          alt="Avatar"
-          class="w-10 h-10 rounded-sm object-cover bg-secondary"
-        />
-        <div class="flex flex-col flex-wrap">
-          <div class="flex items-center flex-wrap space-x-1">
-            <a [routerLink]="['/profile', answer()?.author?.username]"
+  <div class="flex items-center gap-3 px-1">
+    <img
+      src="/avatar.png"
+      alt="Avatar"
+      class="w-10 h-10 rounded-sm object-cover bg-secondary"
+    />
+    <div class="flex flex-col flex-wrap">
+      <div class="flex items-center flex-wrap space-x-1">
+        <a [routerLink]="['/profile', answer()?.author?.username]"
             class="font-semibold text-sm hover:underline">{{ answer()?.author?.displayName }}</a>
-            <span class="text-neutral text-xs">@{{ answer()?.author?.username }}</span>
-          </div>
-          <a class="text-xs text-border hover:underline">{{ answer()?.timeCreation }}</a>
+        <span class="text-neutral text-xs">@{{ answer()?.author?.username }}</span>
+      </div>
+      <a class="text-xs text-border hover:underline">{{ answer()?.timeCreation }}</a>
+    </div>
+  </div>
+
+  @if(isSelectedReply()){
+    <form [formGroup]="questionForm">
+      <textarea class="leading-tight bg-background text-sm break-all h-40 p-2 border border-border w-full rounded-sm resize-none focus:border-2 focus:border-primary-details focus:outline-none"
+      name="reply"
+      formControlName="body"
+      id="reply"
+      [attr.maxlength]="MAX_LENGTH_QUESTION"
+      required
+      >
+      </textarea>
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex justify-center p-1 w-22 rounded-md text-xs text-white font-semibold"
+        [ngClass]="[getNumberOfCharactersQuestion() >= MIN_LENGTH_QUESTION && getNumberOfCharactersQuestion() < MAX_LENGTH_QUESTION ? 'bg-green-600' : 'bg-red-600']">
+        {{getNumberOfCharactersQuestion()}} / {{MAX_LENGTH_QUESTION}}
+        </div>
+        <div class="flex items-center justify-end space-x-1 px-2">
+          <label class="inline-flex justify-between items-center cursor-pointer">
+            <input
+            formControlName="anon"
+            type="checkbox"
+            value=""
+            class="sr-only peer">
+            <div class="relative w-9 h-5 bg-neutral peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-init rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-primary after:border-2 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary
+            duration-300"></div>
+          </label>
+          <p class="ms-2 text-xs text-neutral font-semibold">
+            <span class="text-secondary">
+              {{ (questionForm.get('anon')?.value) ? 'Hide': 'Show' }}
+            </span>
+            your name
+          </p>
         </div>
       </div>
+    </form>
+  }
 
-      <div class="flex flex-wrap justify-between w-full border-t-2 border-border pt-3 px-2
+  <div class="flex flex-wrap justify-between w-full border-t-2 border-border pt-3 px-2
       [&>div]:basis-1/2">
-        <div class="flex justify-start text-neutral text-sm gap-2">
+    @if(isSelectedEdit() || isSelectedReply()){
+      <div class="flex justify-start text-neutral">
+        <button class="flex items-center text-xs gap-1 hover:text-secondary transition cursor-pointer"
+            (click)="onCancelClick()">
+          <i class="fa-solid fa-xmark text-sm"></i>
+          Cancel
+        </button>
+      </div >
+      <div class="flex justify-end text-neutral text-sm">
+        <button class="bg-primary text-white font-semibold rounded-md py-1 px-4 flex items-center transition cursor-pointer duration-300
+          disabled:text-card disabled:bg-primary/35
+          active:scale-85 "
+          [disabled] = "isSelectedEdit() ? !replyForm.valid : !questionForm.valid"
+          (click)="isSelectedEdit() ? sendEditedAnswer(answer()?.id) : sendQuestion(answer()?.id)"
+        >
+        @if(isUpdating || isReplying){
+          <span class="fa-fade">Sending...</span>
+        }
+        @else {
+          <span>{{ isSelectedEdit() ? 'Edit' : 'Send' }}</span>
+        }
+        </button>
+      </div >
+    }
+    @else {
+      <div class="flex justify-start text-neutral text-sm gap-2">
+        <button
+          [disabled]="isLiking"
+          [ngClass]="{'text-primary': answer()?.likesInfo?.hasUserLiked}"
+          class="flex items-center gap-1 hover:text-primary-details transition cursor-pointer"
+          (click)="toggleLike()">
+          <i class="fa-solid fa-heart"></i> {{ answer()?.likesInfo?.likesCount }}
+        </button>
+        <button
+          [disabled]="isSharing"
+          [ngClass]="{'text-secondary': answer()?.sharesInfo?.hasUserShared}"
+          class="flex items-center gap-1 hover:text-secondary transition cursor-pointer"
+          (click)="toggleShare()">
+          <i class="fa-solid fa-share-nodes"></i> {{ answer()?.sharesInfo?.sharesCount }}
+        </button>
+        <button class="flex items-center gap-1 hover:text-init transition cursor-pointer"
+                (click)="onReplyClick()">
+          <i class="fa-solid fa-reply"></i>
+        </button>
+      </div >
 
-          <button
-            [disabled]="isLiking"
-            [ngClass]="{'text-primary': answer()?.likesInfo?.hasUserLiked}"
-            class="flex items-center gap-1 hover:text-primary-details transition cursor-pointer"
-            (click)="toggleLike()">
-            <i class="fa-solid fa-heart"></i> {{ answer()?.likesInfo?.likesCount }}
+      <div class="flex justify-end text-neutral text-sm gap-2">
+        @if(authorIsCurrentUser()){
+          <button class="flex items-center gap-1 transition cursor-pointer"
+                  (click)="onEditClick()">
+            <i class="fa-solid fa-pen-to-square"></i>
           </button>
-
-          <button
-            [disabled]="isSharing"
-            [ngClass]="{'text-secondary': answer()?.sharesInfo?.hasUserShared}"
-            class="flex items-center gap-1 hover:text-secondary transition cursor-pointer"
-            (click)="toggleShare()">
-            <i class="fa-solid fa-share-nodes"></i> {{ answer()?.sharesInfo?.sharesCount }}
-          </button>
-
-          <button class="flex items-center gap-1 hover:text-init transition cursor-pointer">
-            <i class="fa-solid fa-reply"></i>
-          </button>
-
-        </div >
-        <div class="flex justify-end text-neutral text-sm gap-2">
-          @if(authorIsCurrentUser()){
-            <button class="flex items-center gap-1 transition">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="flex items-center gap-1 transition">
+          <button class="flex items-center gap-1 transition cursor-pointer"
+                  (click)="onDeleteClick(answer()?.id)">
+            @if(isDeleting){
+              <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+            }
+            @else {
               <i class="fa-solid fa-trash"></i>
-            </button>
-          }
-
-        </div>
+            }
+          </button>
+        }
       </div>
-
+    }
+  </div>
 </div>

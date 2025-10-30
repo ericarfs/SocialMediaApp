@@ -17,6 +17,12 @@ export class Home implements OnInit, AfterViewInit {
   readonly answers!: Signal<any[]>;
   readonly loading!: Signal<boolean>;
 
+  isSelectedEdit = false;
+  isSelectedReply = false;
+  isSelectedThread = false;
+
+  currentAnswer: AnswerResponse | null = null;
+
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
 
   private observer!: IntersectionObserver;
@@ -51,5 +57,36 @@ export class Home implements OnInit, AfterViewInit {
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+  }
+
+  showThreadSelect(id: number){
+    this.isSelectedThread = true;
+    this.currentAnswer = this.answers().find(a => a.id == id)
+  }
+
+  editAnswerSelect(id: number){
+    this.isSelectedEdit = true;
+    this.currentAnswer = this.answers().find(a => a.id == id)
+  }
+
+  replyAnswerSelect(id: number){
+    this.isSelectedReply = true;
+    this.currentAnswer = this.answers().find(a => a.id == id)
+  }
+
+  editAnswer(body:string, id: number){
+    this.homeService.edit(id, body);
+    this.cancelSelect();
+  }
+
+  cancelSelect(){
+    this.isSelectedEdit = false;
+    this.isSelectedReply = false;
+    this.isSelectedThread = false;
+    this.currentAnswer= null;
+  }
+
+  deleteAnswer(id: number){
+    this.homeService.delete(id);
   }
 }

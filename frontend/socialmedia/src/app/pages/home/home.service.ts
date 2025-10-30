@@ -1,6 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { AnswerResponse } from '../types/answer-response';
 
 
@@ -55,5 +54,23 @@ export class HomeService {
     this.answers.set([]);
     this.currentPage.set(0);
     this.totalPages.set(1);
+  }
+
+  edit(id: number, body: string){
+    this.answers.update(current => current.map(
+      answer => {
+        if (answer.id === id) {
+          return {
+            ...answer,
+            body: body
+          };
+        }
+        return answer;
+      })
+    );
+  }
+
+  delete(id: number){
+    this.answers.update(current => current.filter(a => a.id !== id));
   }
 }

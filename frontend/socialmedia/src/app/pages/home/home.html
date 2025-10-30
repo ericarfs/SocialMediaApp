@@ -6,9 +6,32 @@
         <span class="text-lg">Follow some accounts to fill your feed!</span>
       </div>
     }
-    @for (answer of answers(); track answer.id) {
-      <app-post [answer]="answer">
+    @if(currentAnswer){
+      <app-post
+        [answer] = "currentAnswer"
+        (cancelClicked)="cancelSelect()"
+        (editedClicked)="editAnswer($event, currentAnswer.id)"
+        (replyClicked)="replyAnswerSelect(currentAnswer.id)"
+        [isSelectedEdit] = "isSelectedEdit"
+        [isSelectedReply] = "isSelectedReply"
+        [isSelectedThread] = "isSelectedThread"
+        >
       </app-post>
+    }
+    @else {
+      @for (answer of answers(); track answer.id) {
+        <app-post
+        [answer]="answer"
+        (deleteClicked)="deleteAnswer(answer.id)"
+        (editClicked)="editAnswerSelect(answer.id)"
+        (replyClicked)="replyAnswerSelect(answer.id)"
+        (threadClicked)="showThreadSelect(answer.id)"
+        [isSelectedEdit] = "isSelectedEdit"
+        [isSelectedReply] = "isSelectedReply"
+        [isSelectedThread] = "isSelectedThread"
+        >
+        </app-post>
+      }
     }
 
     @if (loading()) {
@@ -16,7 +39,6 @@
         <i class="fa-solid fa-spinner fa-spin-pulse"></i>
       </div>
     }
-
     <div #scrollAnchor class="h-12"></div>
   </div>
 </app-pages-layout>

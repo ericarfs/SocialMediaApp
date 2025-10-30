@@ -54,7 +54,7 @@ public class Answer implements Serializable {
     @ManyToMany
     private Set<User> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "answer")
+    @OneToMany(mappedBy = "answer", orphanRemoval = true)
     private List<Share> shares = new ArrayList<>();
 
     @OneToMany(mappedBy = "inResponseToAnswer")

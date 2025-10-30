@@ -27,12 +27,14 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
         a.author_id,
         a.body,
         a.updated_at,
-        CASE WHEN a.author_id=:userId THEN a.created_at
-        ELSE s.share_date END AS created_at
+        a.created_at,
+        GREATEST(
+          a.created_at, s.share_date
+        ) AS activity_date
       FROM answers AS a
       LEFT JOIN answers_shares AS s ON a.id= s.answer_id AND s.user_id=:userId
       WHERE a.author_id=:userId OR s.user_id=:userId
-      ORDER BY created_at DESC
+      ORDER BY activity_date DESC
       """, nativeQuery = true)
   Page<Answer> findAuthoredAndSharedAnswers(Long userId, Pageable pageable);
 
@@ -48,10 +50,10 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
         a.author_id,
         a.body,
         a.updated_at,
-        CASE
-          WHEN a.author_id IN (SELECT following_id FROM following) THEN a.created_at
-          ELSE s.share_date
-        END AS created_at
+        a.created_at,
+        GREATEST(
+          a.created_at,s.share_date
+        ) AS activity_date
       FROM
         answers AS a
         LEFT JOIN answers_shares AS s
@@ -59,7 +61,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
       WHERE
         a.author_id IN (SELECT following_id FROM following)
         OR s.user_id IN (SELECT following_id FROM following)
-      ORDER BY created_at DESC
+      ORDER BY activity_date DESC
       """, countQuery = """
       SELECT COUNT(*)
       FROM answers AS a
