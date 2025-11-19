@@ -1,44 +1,9 @@
 <app-pages-layout>
-  <div class="mt-1 flex flex-col items-center gap-1 w-2xl max-w-full mx-auto break-normal">
-    @if(answers().length == 0 && !loading()){
-      <div class="bg-card flex flex-col items-center justify-center w-[98%] min-h-80 border-2 border-border rounded-md text-2xl text-neutral p-3 space-y-2">
-        <span class="font-semibold">There's nothing to see here.</span>
-        <span class="text-lg">Follow some accounts to fill your feed!</span>
-      </div>
-    }
-    @if(currentAnswer){
-      <app-post
-        [answer] = "currentAnswer"
-        (cancelClicked)="cancelSelect()"
-        (editedClicked)="editAnswer($event, currentAnswer.id)"
-        (replyClicked)="replyAnswerSelect(currentAnswer.id)"
-        [isSelectedEdit] = "isSelectedEdit"
-        [isSelectedReply] = "isSelectedReply"
-        [isSelectedThread] = "isSelectedThread"
-        >
-      </app-post>
-    }
-    @else {
-      @for (answer of answers(); track answer.id) {
-        <app-post
-        [answer]="answer"
-        (deleteClicked)="deleteAnswer(answer.id)"
-        (editClicked)="editAnswerSelect(answer.id)"
-        (replyClicked)="replyAnswerSelect(answer.id)"
-        (threadClicked)="showThreadSelect(answer.id)"
-        [isSelectedEdit] = "isSelectedEdit"
-        [isSelectedReply] = "isSelectedReply"
-        [isSelectedThread] = "isSelectedThread"
-        >
-        </app-post>
-      }
-    }
+  <app-feed-template
+    [baseUrl]="baseUrl"
+    [noContentMessage]="noContentMessage"
+    [emptyHintMessage]="emptyHintMessage"
+  >
 
-    @if (loading()) {
-      <div class="text-center py-10 text-secondary text-5xl animate-pulse">
-        <i class="fa-solid fa-spinner fa-spin-pulse"></i>
-      </div>
-    }
-    <div #scrollAnchor class="h-12"></div>
-  </div>
+  </app-feed-template>
 </app-pages-layout>

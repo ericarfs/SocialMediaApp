@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, Signal, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AnswerResponse } from '../types/answer-response';
 
@@ -17,9 +17,7 @@ export interface PagedModel<T> {
 @Injectable({
   providedIn: 'root'
 })
-export class HomeService {
-  private baseUrl = 'http://localhost:8080/api/users/me/feed'
-
+export class FeedTemplateService {
   private answers = signal<AnswerResponse[]>([]);
   private currentPage = signal(0);
   private totalPages = signal(1);
@@ -30,7 +28,7 @@ export class HomeService {
 
   constructor(private http: HttpClient) {}
 
-  loadNextPage(size: number = 10): void {
+  loadNextPage(baseUrl: string, size: number = 10): void {
     if (this.loading() || this.currentPage() >= this.totalPages()) return;
 
     this.loading.set(true);
@@ -39,7 +37,7 @@ export class HomeService {
       .set('page', this.currentPage())
       .set('size', size);
 
-    this.http.get<PagedModel<AnswerResponse>>(this.baseUrl, { params }).subscribe({
+    this.http.get<PagedModel<AnswerResponse>>(baseUrl, { params }).subscribe({
       next: (res) => {
         this.answers.set([...this.answers(), ...res.content]);
         this.currentPage.set(res.page.number + 1);
