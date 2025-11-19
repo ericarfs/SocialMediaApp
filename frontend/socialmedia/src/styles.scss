@@ -17,7 +17,7 @@
   --secondary: var(--color-teal-600);
   --secondary-details: var(--color-teal-600);
 
-  --text-base: var(--color-black);
+  --text-init: var(--color-black);
   --text-title: var(--color-rose-950);
   --text-neutral: var(--color-neutral-600);
 
@@ -37,7 +37,7 @@
     --secondary: var(--color-teal-300);
     --secondary-details: var(--color-teal-300);
 
-    --text-base: var(--color-white);
+    --text-init: var(--color-white);
     --text-title: var(--color-rose-50);
     --text-neutral: var(--color-neutral-200);
     --input-bg: var(--color-zinc-600);
@@ -54,7 +54,7 @@
   --color-secondary: var(--secondary);
   --color-secondary-details: var(--secondary-details);
 
-  --color-init: var(--text-base);
+  --color-init: var(--text-init);
   --color-title: var(--text-title);
   --color-neutral: var(--text-neutral);
 
@@ -67,7 +67,7 @@ html, body {
 
 body{
   background-color: var(--background);
-  color: var(--text-base);
+  color: var(--text-init);
 }
 
 h1 {
