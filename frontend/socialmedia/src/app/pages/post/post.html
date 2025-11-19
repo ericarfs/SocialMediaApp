@@ -12,8 +12,7 @@
         </div>
         @for(answer of relatedAnswers; track answer.id){
           <div class="space-y-2 border-b-2 border-border mb-3">
-            <div class="text-init font-bold leading-4">
-              {{ answer.question.body }}
+            <div class="text-init font-bold leading-4" [innerHTML]="answer.question.body | urlify">
             </div>
             <div class="flex items-center flex-wrap space-x-1 text-primary-details">
               <i class="fa-solid fa-user text-xs"></i>
@@ -27,8 +26,7 @@
               }
             </div>
             <div class="text-init text-sm leading-4 mb-2">
-              <div class="ml-1 px-2 border-l-2 border-border">
-                {{ answer.body }}
+              <div class="ml-1 px-2 border-l-2 border-border" [innerHTML]="answer.body | urlify">
               </div>
             </div>
           </div>
@@ -43,8 +41,7 @@
         </div>
       }
     }
-    <div class="text-init font-bold leading-4">
-      {{ answer()?.question?.body }}
+    <div class="text-init font-bold leading-4" [innerHTML]="answer()?.question?.body | urlify">
     </div>
     <div class="flex items-center flex-wrap space-x-1 text-primary-details">
       <i class="fa-solid fa-user text-xs"></i>
@@ -77,8 +74,7 @@
       </form>
     }
     @else {
-      <div class="ml-1 px-2 border-l-2 border-border">
-        {{ answer()?.body }}
+      <div class="ml-1 px-2 border-l-2 border-border" [innerHTML]="answer()?.body | urlify">
       </div>
     }
   </div>

@@ -1,8 +1,9 @@
 import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { QuestionResponse } from '../types/question-response';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { UrlifyPipe } from '../profile/urlify.pipe';
 
 interface ReplyForm {
   body: FormControl,
@@ -13,7 +14,8 @@ interface ReplyForm {
   imports: [
     RouterLink,
     ReactiveFormsModule,
-    NgClass],
+    NgClass,
+    UrlifyPipe],
   templateUrl: './question.html',
   styleUrl: './question.scss',
   host:{

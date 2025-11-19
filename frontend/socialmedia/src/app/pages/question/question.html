@@ -20,9 +20,8 @@
         </div>
       </div>
 
-    <div class="px-1 text-init text-sm leading-4">
-        {{ question()?.body }}
-      </div>
+    <div class="px-1 text-init text-sm leading-4" [innerHTML]="question()?.body | urlify">
+    </div>
 
       @if(isSelected()){
         <form [formGroup]="form">
