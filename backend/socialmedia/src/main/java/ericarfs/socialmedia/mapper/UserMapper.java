@@ -39,6 +39,8 @@ public interface UserMapper {
     UserResponseDTO toResponseDTO(User user);
 
     @Mapping(target = "isLoggedUser", source = "username", qualifiedByName = "isLoggedUser")
+    @Mapping(target = "isFollowing", source = "followers", qualifiedByName = "isFollowing")
+    @Mapping(target = "createdAt", source = "createdAt")
     UserProfileDTO toProfileDTO(User user);
 
     UserBasicDTO toListDTO(User user);

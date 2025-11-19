@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UrlifyPipe } from '../profile/urlify.pipe';
+import { UserService } from '../profile/user-info/user-info.service';
 
 interface ReplyForm {
   body: FormControl,
@@ -23,7 +25,8 @@ interface QuestionForm {
   imports: [
     RouterLink,
     ReactiveFormsModule,
-    NgClass],
+    NgClass,
+    UrlifyPipe],
   templateUrl: './post.html',
   styleUrl: './post.scss',
   host:{
@@ -68,6 +71,7 @@ export class Post implements OnInit {
   constructor(
     private postService: PostService,
     private authService: AuthService,
+    private userService: UserService,
     private dialog: MatDialog
   ) {
     this.replyForm = new FormGroup({
@@ -252,6 +256,17 @@ export class Post implements OnInit {
                 panelClass:['snackbar-success']
             })
             this.deleteClicked.emit();
+            let loadedUser = this.userService.loadedUser;
+            loadedUser.update(current => {
+              if (!current) return null;
+
+              const newCount = Math.max(0, current.answersCount - 1);
+
+              return {
+                ...current,
+                answersCount: newCount
+              }
+            })
           },
           error: () => {
             this.snackBar.open("Failed to delete the question. Try again later.",'',{

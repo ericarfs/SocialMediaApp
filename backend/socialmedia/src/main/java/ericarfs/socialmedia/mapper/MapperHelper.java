@@ -1,5 +1,7 @@
 package ericarfs.socialmedia.mapper;
 
+import java.util.List;
+
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,13 @@ public class MapperHelper {
         User user = authService.getAuthenticatedUser();
 
         return user.getUsername().equals(username);
+    }
+
+    @Named("isFollowing")
+    public boolean mapIsFollowing(List<User> followersList) {
+        User user = authService.getAuthenticatedUser();
+
+        return followersList.contains(user);
     }
 
     @Named("hasUserLiked")

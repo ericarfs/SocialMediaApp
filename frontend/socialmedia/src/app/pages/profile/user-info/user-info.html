@@ -1,0 +1,118 @@
+<div class="relative bg-card flex flex-col items-center w-xl max-w-[98%] border-2 border-border rounded-md text-sm p-5 space-y-4">
+  <div class="flex flex-col items-center w-sm max-w-full space-y-3">
+    <img
+      [src]="loadedUser()?.icon ? loadedUser()?.icon : '/avatar.png'"
+      alt="Avatar"
+      class="size-30 rounded-md object-cover bg-secondary border-2 border-neutral"
+    />
+    <div class="flex flex-col items-center space-y-1">
+      <span class="font-semibold text-lg leading-6">{{ loadedUser()?.displayName }}</span>
+      <span class="text-border text-sm">@{{ loadedUser()?.username }}</span>
+    </div>
+    <div class="text-sm leading-4">
+      {{ loadedUser()?.bio }}
+    </div>
+    <span class="text-border w-full break-normal">
+      <i class="fa-solid fa-calendar-days"></i>
+      {{ getFormattedJoinedDate(loadedUser()?.createdAt) }}
+    </span>
+    <div class="flex justify-around w-full text-xs text-neutral
+                [&>span]:basis-1/4 [&>span]:flex [&>span]:flex-wrap [&>span]:cursor-pointer [&>span]:hover:underline [&>span]:space-y-1
+                [&>span>strong]:text-init [&>span>strong]:mr-1">
+      <span><a [routerLink]="loadedUser()?.username">
+        <strong>{{ loadedUser()?.answersCount }}</strong> Answers
+      </a></span>
+      <span><a [routerLink]="[loadedUser()?.username, 'followers']">
+        <strong>{{ loadedUser()?.followersCount }}</strong> Followers
+      </a></span>
+      <span><a [routerLink]="[loadedUser()?.username, 'followings']">
+        <strong>{{ loadedUser()?.followingCount }}</strong> Followings
+      </a></span>
+    </div>
+  </div>
+  @if(!isLoggedUser){
+  <div class="flex w-full justify-end space-x-2">
+      <button
+        [ngClass]="[!isLoggedUser && loadedUser()?.isFollowing ?
+        'text-neutral border-2 border-border hover:bg-red-500/20 hover:text-red-500 hover:border-red-400 transition-all duration-300' :
+        'bg-primary text-white']"
+        class="py-1 px-10 font-semibold rounded-md cursor-pointer
+              active:scale-90 transition-all duration-300 text-xs"
+        (click)="buttonCall()">
+        {{ loadedUser()?.isFollowing ? 'Unfollow' : 'Follow' }}
+      </button>
+      <div class="bg-background self-center p-1 rounded-sm cursor-pointer
+                  hover:bg-border transition-all duration-300">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </div>
+    </div>
+  }
+    <div class="h-10 py-2 px-3 w-full bg-neutral/15 rounded-md flex justify-between items-center md:hidden cursor-pointer"
+        (click) = "questionClicked = true">
+      <span class="text-border truncate">{{ loadedUser()?.questionHelper }}</span>
+      <i class="fa-solid fa-paper-plane text-base text-secondary"></i>
+    </div>
+    <div [ngClass]="[questionClicked?
+    'z-10 fixed bottom-0 space-y-3 bg-card border-2 border-border pt-4 px-3 rounded-t-4xl h-full w-[99%] opacity-100 visible translate-y-0':
+    'opacity-0 invisible translate-y-full w-full md:opacity-100 md:visible md:translate-y-0']"
+        class="mt-2 md:block transition-all duration-500 ease-in-out">
+      @if(questionClicked){
+        <div class="flex justify-end cursor-pointer"
+              aria-label="Close">
+          <i class="fa-solid fa-xmark text-lg
+                    hover:text-primary
+                    active:scale-85
+                    transition duration-300"
+              (click) = "closeQuestionForm()"></i>
+        </div>
+      }
+      <form [formGroup]="questionForm"
+        [ngClass]="{'hidden md:block': !questionClicked}">
+        <textarea
+          [ngClass]="{'h-120 ': questionClicked}"
+          class="leading-tight bg-background text-sm break-all h-36 p-2 border border-border w-full rounded-sm resize-none placeholder-border focus:border-2 focus:border-primary-details focus:outline-none"
+        name="reply"
+        formControlName="body"
+        id="reply"
+        [placeholder]="loadedUser()?.questionHelper"
+        [attr.maxlength]="MAX_LENGTH_QUESTION"
+        required
+        >
+        </textarea>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div class="flex justify-center p-1 w-22 rounded-md text-xs text-white font-semibold"
+          [ngClass]="[getNumberOfCharacters() >= MIN_LENGTH_QUESTION && getNumberOfCharacters() < MAX_LENGTH_QUESTION ? 'bg-green-600' : 'bg-red-600']">
+          {{getNumberOfCharacters()}} / {{MAX_LENGTH_QUESTION}}
+          </div>
+          <div class="flex items-center justify-end space-x-1 px-2">
+            <label class="inline-flex justify-between items-center cursor-pointer">
+              <input
+              formControlName="anon"
+              type="checkbox"
+              value=""
+              class="sr-only peer">
+              <div class="relative w-9 h-5 bg-neutral peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-init rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-primary after:border-2 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary
+              duration-300"></div>
+            </label>
+            <p class="ms-2 text-xs text-neutral font-semibold">
+              <span class="text-secondary">
+                {{ (questionForm.get('anon')?.value) ? 'Hide': 'Show' }}
+              </span>
+              your name
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-end w-full border-t-2 border-border pt-3 px-2">
+          <button class="bg-primary text-white font-semibold rounded-md py-1 px-4 flex items-center transition cursor-pointer duration-300
+            disabled:text-card disabled:bg-primary/35
+            active:scale-85 "
+            [disabled] = "!questionForm.valid"
+            (click) = "sendQuestion()"
+          >
+          <span [ngClass]="{'fa-fade' : isSending}"
+          >{{ isSending ? 'Sending...' : 'Send' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

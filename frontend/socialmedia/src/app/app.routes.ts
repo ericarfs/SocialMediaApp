@@ -10,8 +10,8 @@ import { NewPassword } from './auth/new-password/new-password';
 import { Home } from './pages/home/home';
 import { Inbox } from './pages/inbox/inbox';
 import { Notifications } from './pages/notifications/notifications';
-import { Profile } from './pages/profile/profile';
 import { Settings } from './pages/settings/settings';
+import { ProfileLayout } from './pages/profile/profile-layout/profile-layout';
 
 export const routes: Routes = [
   {
@@ -36,7 +36,12 @@ export const routes: Routes = [
   },
   {
     path: "profile",
-    component: Profile,
+    component: ProfileLayout,
+    canActivate: [authGuard]
+  },
+  {
+    path: "profile/:username",
+    component: ProfileLayout,
     canActivate: [authGuard]
   },
   {
